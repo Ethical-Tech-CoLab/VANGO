@@ -40,7 +40,7 @@ Enter any of the codes below in the app (tap the **+** button → *Enter code*).
 | `HOLLOW21` | Hollow Choir | R. Venn | Studio Aperture |
 | `ECHO07` | Echo Garden | T. Lindqvist | Nomad Pavilion |
 | `VOID99` | Voidwalk | K. Amaro | Lattice Museum |
-| `BURA01` | Bura Ceramics | Niger | Ceramic Studio |
+| `BURA01` | Bura Ceramics | Niger | AABC |
 | `DAVID01` | David | Michelangelo | Galleria dell'Accademia |
 
 ---
