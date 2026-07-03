@@ -1,16 +1,81 @@
-# React + Vite
+# VANGO — Art Passport
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A mobile-style digital passport for collecting stamps at art experiences. Each artwork has a unique code; scanning or entering the code earns a stamp that is saved to your passport.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+### Passport & Stamps
+- **Collect stamps** by scanning a QR code or manually entering an artwork code at any participating installation.
+- Each stamp displays a custom vintage-style illustration of the artwork, the artist name, venue, and the date it was collected.
+- Stamps are stored locally in the browser and persist between sessions.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Bio Page
+- Displays the passport holder's name, profile picture, member-since date, total stamps collected, and passport number.
+- Includes the Ars Pro Mundo emblem.
 
-## Expanding the Oxlint configuration
+### Settings
+- **Name** — set your passport holder name.
+- **Profile picture** — upload a photo from your device.
+- **Theme** — toggle between dark and light mode.
+- **Language** — switch the full app interface between English, French, and Italian.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+### Multilingual Support
+All UI text is available in:
+- 🇬🇧 English
+- 🇫🇷 French
+- 🇮🇹 Italian
+
+---
+
+## Stamp Codes
+
+Enter any of the codes below in the app (tap the **+** button → *Enter code*). Codes are case-insensitive and hyphens/spaces are ignored.
+
+| Code | Artwork | Artist | Venue |
+|---|---|---|---|
+| `CHROMA14` | Chromatic Drift | N. Osei | Biennale — Gallery Sigma |
+| `FAULT02` | Fault Lines | M. Duarte | Museum of Other Worlds |
+| `HOLLOW21` | Hollow Choir | R. Venn | Studio Aperture |
+| `ECHO07` | Echo Garden | T. Lindqvist | Nomad Pavilion |
+| `VOID99` | Voidwalk | K. Amaro | Lattice Museum |
+| `BURA01` | Bura Ceramics | Niger | Ceramic Studio |
+| `DAVID01` | David | Michelangelo | Galleria dell'Accademia |
+
+---
+
+## Adding New Stamp Codes
+
+Open `src/App.jsx` and find the `CATALOG` object (search for `const CATALOG`). Add a new entry:
+
+```js
+const CATALOG = {
+  // existing entries...
+  MYCODE01: { title: "Artwork Title", artist: "Artist Name", venue: "Gallery Name" },
+};
+```
+
+The key becomes the stamp code (uppercase, no spaces or hyphens). Users can type it in any format — the app normalises it automatically.
+
+To generate a matching QR code for physical signage, encode the raw key string (e.g. `MYCODE01`) in any QR code generator.
+
+---
+
+## Running Locally
+
+```bash
+npm install
+npm run dev
+```
+
+The app runs at `http://localhost:5173` by default.
+
+---
+
+## Tech Stack
+
+- [React](https://react.dev) — UI
+- [Vite](https://vitejs.dev) — build tool & dev server
+- [lucide-react](https://lucide.dev) — icons
+- Google Fonts — Fraunces, Space Mono, Inter, Nothing You Could Do, Caveat
