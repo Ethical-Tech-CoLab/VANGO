@@ -148,11 +148,11 @@ function mulberry32(seed) {
 }
 
 const PALETTE = [
-  ["#14E0C4", "#0B8F7C"],
-  ["#FF4F8B", "#B8285C"],
-  ["#B8863B", "#7A5A22"],
-  ["#6C7BFF", "#3A44B0"],
-  ["#F2C14E", "#B98B1E"],
+  ["#2E6B5E", "#1A3D35"],  // Deep Verdigris
+  ["#8B3A3A", "#5C2020"],  // Crimson Wax
+  ["#B8863B", "#7A5A22"],  // Antique Gold
+  ["#3A5C8C", "#1E3454"],  // Prussian Blue
+  ["#6B4C2A", "#3D2A14"],  // Sepia Brown
 ];
 
 function formatDate(iso) {
@@ -210,14 +210,15 @@ function StampArt({ id, c1, c2 }) {
         {Array.from({length:14},(_,i)=>(
           <line key={i} x1="14" y1={32+i*8} x2="146" y2={32+i*8} stroke={c1} strokeWidth="0.3" opacity="0.1"/>
         ))}
+        <path d="M63,60 Q64,80 63,90 L63,120 L97,120 L97,90 Q96,80 97,60 Z" fill={c1} opacity="0.6"/>
         <rect x="50" y="132" width="60" height="8" fill={c1} opacity="0.65"/>
         <rect x="46" y="127" width="68" height="6" fill={c1} opacity="0.45"/>
         <path d="M71,118 Q70,124 69,130" stroke={c1} strokeWidth="5.5" strokeLinecap="round" fill="none"/>
         <path d="M89,118 Q90,124 91,130" stroke={c1} strokeWidth="5.5" strokeLinecap="round" fill="none"/>
-        <path d="M67,94 Q68,118 71,118 L89,118 Q92,118 93,94" fill={c1} opacity="0.2" stroke={c1} strokeWidth="1.2"/>
-        <path d="M64,66 Q66,94 67,94 L93,94 Q94,94 96,66" fill={c1} opacity="0.18" stroke={c1} strokeWidth="1.5"/>
+        <path d="M67,94 Q68,118 71,118 L89,118 Q92,118 93,94" fill={c1} opacity="0.6" stroke={c1} strokeWidth="2.5"/>
+        <path d="M64,66 Q66,94 67,94 L93,94 Q94,94 96,66" fill={c1} opacity="0.55" stroke={c1} strokeWidth="3"/>
         {Array.from({length:6},(_,i)=>(
-          <line key={i} x1={67+i*4.5} y1="68" x2={65+i*4.5} y2="93" stroke={c1} strokeWidth="0.7" opacity="0.35"/>
+          <line key={i} x1={67+i*4.5} y1="68" x2={65+i*4.5} y2="93" stroke={c1} strokeWidth="0.7" opacity="0.2"/>
         ))}
         <path d="M66,70 Q57,81 52,96" stroke={c1} strokeWidth="4.5" strokeLinecap="round" fill="none"/>
         <circle cx="51" cy="98" r="4" fill={c1} opacity="0.85"/>
@@ -225,7 +226,7 @@ function StampArt({ id, c1, c2 }) {
         <rect x="76" y="58" width="8" height="10" fill={c1} opacity="0.8" rx="1"/>
         <ellipse cx="80" cy="46" rx="12" ry="13.5" fill={c1} opacity="0.8"/>
         <path d="M68,43 Q70,33 80,34 Q90,33 92,43" fill={c2} opacity="0.9" stroke={c1} strokeWidth="0.8"/>
-        <ellipse cx="80" cy="48" rx="8" ry="9" fill="#F5EDD5" opacity="0.2"/>
+        <ellipse cx="80" cy="48" rx="8" ry="9" fill="#F5EDD5" opacity="0.15"/>
         <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1.5">FIRENZE · 1504</text>
       </g>
     );
@@ -236,11 +237,12 @@ function StampArt({ id, c1, c2 }) {
         {Array.from({length:12},(_,i)=>(
           <line key={i} x1="14" y1={40+i*8} x2="146" y2={40+i*8} stroke={c1} strokeWidth="0.3" opacity="0.1"/>
         ))}
+        <path d="M44,105 Q42,76 80,65 Q118,76 116,105 Q116,130 80,132 Q44,130 44,105 Z" fill={c1} opacity="0.55"/>
         <ellipse cx="80" cy="132" rx="32" ry="5" fill={c1} opacity="0.12"/>
-        <ellipse cx="80" cy="128" rx="22" ry="5" fill={c1} opacity="0.3" stroke={c1} strokeWidth="1"/>
-        <path d="M46,105 Q44,78 80,68 Q116,78 114,105 Q114,128 80,130 Q46,128 46,105 Z" fill={c1} opacity="0.17" stroke={c1} strokeWidth="2"/>
-        <path d="M71,68 Q73,56 80,54 Q87,56 89,68" fill={c1} opacity="0.3" stroke={c1} strokeWidth="1.5"/>
-        <ellipse cx="80" cy="54" rx="9.5" ry="3.5" fill={c1} opacity="0.5" stroke={c1} strokeWidth="1.2"/>
+        <ellipse cx="80" cy="128" rx="22" ry="5" fill={c1} opacity="0.6" stroke={c1} strokeWidth="1"/>
+        <path d="M46,105 Q44,78 80,68 Q116,78 114,105 Q114,128 80,130 Q46,128 46,105 Z" fill={c1} opacity="0.55" stroke={c1} strokeWidth="2.5"/>
+        <path d="M71,68 Q73,56 80,54 Q87,56 89,68" fill={c1} opacity="0.55" stroke={c1} strokeWidth="1.5"/>
+        <ellipse cx="80" cy="54" rx="9.5" ry="3.5" fill={c1} opacity="0.7" stroke={c1} strokeWidth="1.2"/>
         <ellipse cx="80" cy="84" rx="31" ry="9" fill="none" stroke={c1} strokeWidth="1" strokeDasharray="3,2" opacity="0.6"/>
         <ellipse cx="80" cy="100" rx="34" ry="11" fill="none" stroke={c1} strokeWidth="1" strokeDasharray="2,3" opacity="0.5"/>
         <ellipse cx="80" cy="116" rx="30" ry="9" fill="none" stroke={c1} strokeWidth="1" strokeDasharray="3,2" opacity="0.6"/>
@@ -249,8 +251,8 @@ function StampArt({ id, c1, c2 }) {
         ))}
         {[60,72,88,100].map(x=>(
           <g key={x} transform={`translate(${x},100)`}>
-            <line x1="-3" y1="-3" x2="3" y2="3" stroke={c1} strokeWidth="1.2" opacity="0.55"/>
-            <line x1="3" y1="-3" x2="-3" y2="3" stroke={c1} strokeWidth="1.2" opacity="0.55"/>
+            <line x1="-3" y1="-3" x2="3" y2="3" stroke={c1} strokeWidth="1.2" opacity="0.7"/>
+            <line x1="3" y1="-3" x2="-3" y2="3" stroke={c1} strokeWidth="1.2" opacity="0.7"/>
           </g>
         ))}
         <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">NIGER · 2ND–11TH C.</text>
@@ -260,14 +262,15 @@ function StampArt({ id, c1, c2 }) {
   if (id === 'CHROMA14') {
     return (
       <g>
+        <circle cx="80" cy="80" r="28" fill={c1} opacity="0.35"/>
         {[0,1,2,3,4,5,6,7,8,9].map(i=>(
-          <path key={i} d={`M ${22+i*4},${90-i*2} Q 80,${38+i*5} ${138-i*4},${90-i*2}`} fill="none" stroke={i%2===0?c1:c2} strokeWidth={2.5-i*0.18} opacity={0.7-i*0.05}/>
+          <path key={i} d={`M ${22+i*4},${90-i*2} Q 80,${38+i*5} ${138-i*4},${90-i*2}`} fill="none" stroke={i%2===0?c1:c2} strokeWidth={2.5-i*0.18} opacity={0.75-i*0.05}/>
         ))}
-        <circle cx="80" cy="80" r="22" fill="none" stroke={c1} strokeWidth="1.5" opacity="0.5"/>
-        <circle cx="80" cy="80" r="12" fill={c1} opacity="0.2"/>
-        <circle cx="80" cy="80" r="5" fill={c1} opacity="0.55"/>
+        <circle cx="80" cy="80" r="22" fill="none" stroke={c1} strokeWidth="2" opacity="0.6"/>
+        <circle cx="80" cy="80" r="12" fill={c1} opacity="0.5"/>
+        <circle cx="80" cy="80" r="5" fill={c1} opacity="0.85"/>
         {[0,1,2,3,4,5,6].map(i=>(
-          <circle key={i} cx={36+i*16} cy={115+Math.sin(i)*5} r="2.2" fill={i%2===0?c1:c2} opacity="0.5"/>
+          <circle key={i} cx={36+i*16} cy={115+Math.sin(i)*5} r="2.2" fill={i%2===0?c1:c2} opacity="0.65"/>
         ))}
         <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">KINETIC · COLOUR</text>
       </g>
@@ -281,19 +284,20 @@ function StampArt({ id, c1, c2 }) {
     ];
     return (
       <g>
+        <path d="M 76,34 Q 74,60 82,88 Q 78,112 75,138 L84,138 Q 87,112 83,88 Q 90,60 84,34 Z" fill={c1} opacity="0.55"/>
         {layers.map((l,i)=>(
-          <rect key={i} x="14" y={l.y1} width="132" height={l.y2-l.y1} fill={l.odd?c2:c1} opacity="0.08"/>
+          <rect key={i} x="14" y={l.y1} width="132" height={l.y2-l.y1} fill={l.odd?c2:c1} opacity="0.2"/>
         ))}
         {layers.map((l,i)=>(
-          <line key={i} x1="14" y1={l.y2} x2="146" y2={l.y2} stroke={c1} strokeWidth="0.7" opacity="0.45"/>
+          <line key={i} x1="14" y1={l.y2} x2="146" y2={l.y2} stroke={c1} strokeWidth="1" opacity="0.65"/>
         ))}
         {[36,65,87,112].map((y,gi)=>(
           Array.from({length:11},(_,j)=>(
-            <line key={`${gi}-${j}`} x1={16+j*11} y1={y} x2={20+j*11} y2={y+11} stroke={c1} strokeWidth="0.6" opacity="0.35"/>
+            <line key={`${gi}-${j}`} x1={16+j*11} y1={y} x2={20+j*11} y2={y+11} stroke={c1} strokeWidth="0.6" opacity="0.25"/>
           ))
         ))}
         <path d="M 79,34 Q 76,62 83,90 Q 79,112 77,138" stroke={c1} strokeWidth="2.5" fill="none" opacity="0.9"/>
-        <path d="M 83,34 Q 80,62 87,90 Q 83,112 81,138" stroke={c1} strokeWidth="1" fill="none" opacity="0.45"/>
+        <path d="M 83,34 Q 80,62 87,90 Q 83,112 81,138" stroke={c1} strokeWidth="1.5" fill="none" opacity="0.5"/>
         <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">GEOLOGICAL</text>
       </g>
     );
@@ -301,14 +305,15 @@ function StampArt({ id, c1, c2 }) {
   if (id === 'HOLLOW21') {
     return (
       <g>
-        <path d="M 80,38 Q 102,54 107,86 Q 110,112 80,122 Q 50,112 53,86 Q 58,54 80,38 Z" fill={c1} opacity="0.15" stroke={c1} strokeWidth="2"/>
-        <ellipse cx="80" cy="122" rx="28" ry="7" fill="none" stroke={c1} strokeWidth="1.5" opacity="0.7"/>
-        <path d="M 80,53 Q 94,65 96,89 Q 96,110 80,115 Q 64,110 64,89 Q 66,65 80,53 Z" fill="#F5EDD5" opacity="0.35"/>
+        <path d="M 80,36 Q 104,52 110,86 Q 113,115 80,126 Q 47,115 50,86 Q 56,52 80,36 Z" fill={c1} opacity="0.55"/>
+        <path d="M 80,38 Q 102,54 107,86 Q 110,112 80,122 Q 50,112 53,86 Q 58,54 80,38 Z" fill={c1} opacity="0.5" stroke={c1} strokeWidth="2.5"/>
+        <ellipse cx="80" cy="122" rx="28" ry="7" fill="none" stroke={c1} strokeWidth="2" opacity="0.7"/>
+        <path d="M 80,53 Q 94,65 96,89 Q 96,110 80,115 Q 64,110 64,89 Q 66,65 80,53 Z" fill="#F5EDD5" opacity="0.3"/>
         {[16,28,40].map((r,i)=>(
-          <path key={i} d={`M ${80-r-38},${90+r} Q ${80-r},${90-r} ${80+r},${90+r}`} fill="none" stroke={c2} strokeWidth={1.5-i*0.3} opacity={0.6-i*0.15} strokeDasharray={i===2?"4 2":"0"}/>
+          <path key={i} d={`M ${80-r-38},${90+r} Q ${80-r},${90-r} ${80+r},${90+r}`} fill="none" stroke={c2} strokeWidth={2-i*0.3} opacity={0.75-i*0.15} strokeDasharray={i===2?"4 2":"0"}/>
         ))}
         {[-24,-8,8,24].map((x,i)=>(
-          <circle key={i} cx={80+x} cy="132" r="3.5" fill={c1} opacity={0.45+i*0.12}/>
+          <circle key={i} cx={80+x} cy="132" r="3.5" fill={c1} opacity={0.6+i*0.08}/>
         ))}
         <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">RESONANCE</text>
       </g>
@@ -317,23 +322,24 @@ function StampArt({ id, c1, c2 }) {
   if (id === 'ECHO07') {
     return (
       <g>
+        <circle cx="80" cy="88" r="20" fill={c2} opacity="0.55"/>
         {[10,20,30,42,55].map((r,i)=>(
-          <circle key={i} cx="80" cy="88" r={r} fill="none" stroke={c1} strokeWidth={1.3-i*0.15} opacity={0.65-i*0.1}/>
+          <circle key={i} cx="80" cy="88" r={r} fill="none" stroke={c1} strokeWidth={1.8-i*0.15} opacity={0.78-i*0.1}/>
         ))}
-        <line x1="80" y1="133" x2="80" y2="68" stroke={c1} strokeWidth="1.5" opacity="0.7"/>
-        <line x1="80" y1="113" x2="54" y2="90" stroke={c1} strokeWidth="1.2" opacity="0.6"/>
-        <line x1="80" y1="103" x2="106" y2="80" stroke={c1} strokeWidth="1.2" opacity="0.6"/>
-        <line x1="80" y1="90" x2="60" y2="68" stroke={c1} strokeWidth="1" opacity="0.5"/>
-        <line x1="80" y1="84" x2="100" y2="64" stroke={c1} strokeWidth="1" opacity="0.5"/>
+        <line x1="80" y1="133" x2="80" y2="68" stroke={c1} strokeWidth="2" opacity="0.8"/>
+        <line x1="80" y1="113" x2="54" y2="90" stroke={c1} strokeWidth="1.8" opacity="0.75"/>
+        <line x1="80" y1="103" x2="106" y2="80" stroke={c1} strokeWidth="1.8" opacity="0.75"/>
+        <line x1="80" y1="90" x2="60" y2="68" stroke={c1} strokeWidth="1.5" opacity="0.65"/>
+        <line x1="80" y1="84" x2="100" y2="64" stroke={c1} strokeWidth="1.5" opacity="0.65"/>
         {[
           {cx:52,cy:88,rx:9,ry:5,a:-30},{cx:108,cy:78,rx:9,ry:5,a:20},
           {cx:58,cy:66,rx:8,ry:4,a:-45},{cx:102,cy:62,rx:8,ry:4,a:40},
           {cx:80,cy:66,rx:7,ry:11,a:0},
         ].map((l,i)=>(
-          <ellipse key={i} cx={l.cx} cy={l.cy} rx={l.rx} ry={l.ry} fill={c1} opacity={0.48+i*0.05} transform={`rotate(${l.a},${l.cx},${l.cy})`}/>
+          <ellipse key={i} cx={l.cx} cy={l.cy} rx={l.rx} ry={l.ry} fill={c1} opacity={0.62+i*0.05} transform={`rotate(${l.a},${l.cx},${l.cy})`}/>
         ))}
-        <circle cx="80" cy="88" r="5.5" fill={c2} opacity="0.85"/>
-        <line x1="34" y1="133" x2="126" y2="133" stroke={c1} strokeWidth="1.5" opacity="0.5"/>
+        <circle cx="80" cy="88" r="5.5" fill={c2} opacity="0.9"/>
+        <line x1="34" y1="133" x2="126" y2="133" stroke={c1} strokeWidth="1.5" opacity="0.7"/>
         <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">BOTANICAL</text>
       </g>
     );
@@ -343,10 +349,10 @@ function StampArt({ id, c1, c2 }) {
       <g>
         <rect x="14" y="32" width="132" height="114" fill={c1} opacity="0.88"/>
         {[[30,45],[55,38],[90,42],[118,48],[130,60],[35,70],[105,58],[25,90],[45,105],[70,55],[115,100],[138,80],[60,120],[100,115],[135,40],[22,62],[140,105],[50,130],[120,130],[75,35],[90,120]].map(([x,y],i)=>(
-          <circle key={i} cx={x} cy={y} r={i%4===0?1.8:0.9} fill="#F5EDD5" opacity={0.4+((i*37)%100)/200}/>
+          <circle key={i} cx={x} cy={y} r={i%4===0?1.8:0.9} fill="#F5EDD5" opacity={0.5+((i*37)%100)/200}/>
         ))}
         {[42,30,20,12].map((r,i)=>(
-          <circle key={i} cx="80" cy="87" r={r} fill="none" stroke="#F5EDD5" strokeWidth="0.8" opacity={0.25+i*0.15}/>
+          <circle key={i} cx="80" cy="87" r={r} fill="none" stroke="#F5EDD5" strokeWidth="1" opacity={0.35+i*0.18}/>
         ))}
         <circle cx="80" cy="99" r="4.5" fill="#F5EDD5" opacity="0.9"/>
         <line x1="80" y1="103" x2="80" y2="116" stroke="#F5EDD5" strokeWidth="2.5" opacity="0.85"/>
@@ -364,7 +370,6 @@ function StampArt({ id, c1, c2 }) {
     </foreignObject>
   );
 }
-
 function Stamp({ data, index }) {
   const [c1, c2] = PALETTE[hashSeed(data.id) % PALETTE.length];
   const maskId = `perf-${data.id}`;
