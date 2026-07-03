@@ -384,8 +384,6 @@ function Stamp({ data, index }) {
         </defs>
         <g mask={`url(#${maskId})`}>
           <rect x="8" y="8" width="144" height="194" fill="#F5EDD5"/>
-          <rect x="8" y="8" width="144" height="24" fill={c1}/>
-          <text x="80" y="24" textAnchor="middle" fill="#F5EDD5" fontSize="10" fontFamily="'Space Mono', monospace" fontWeight="700" letterSpacing="3">VANGO</text>
           <rect x="14" y="36" width="132" height="114" fill="none" stroke={c1} strokeWidth="0.8" opacity="0.35"/>
           <StampArt id={data.code} c1={c1} c2={c2}/>
           <line x1="14" y1="156" x2="146" y2="156" stroke={c1} strokeWidth="0.7" opacity="0.4"/>
