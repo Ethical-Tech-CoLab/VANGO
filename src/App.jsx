@@ -373,6 +373,7 @@ function StampArt({ id, c1, c2 }) {
 function Stamp({ data, index }) {
   const [c1, c2] = PALETTE[hashSeed(data.id) % PALETTE.length];
   const maskId = `perf-${data.id}`;
+  const clipId = `clip-${data.id}`;
   const topXs = Array.from({length: 11}, (_, i) => Math.round(16 + i * 12.8));
   const sideYs = Array.from({length: 15}, (_, i) => Math.round(16 + i * 12.4));
   return (
@@ -386,26 +387,29 @@ function Stamp({ data, index }) {
             {sideYs.map(y => <circle key={`l${y}`} cx="8" cy={y} r="6" fill="black"/>)}
             {sideYs.map(y => <circle key={`r${y}`} cx="152" cy={y} r="6" fill="black"/>)}
           </mask>
+          <clipPath id={clipId}>
+            <rect x="22" y="44" width="116" height="106"/>
+          </clipPath>
         </defs>
         <g mask={`url(#${maskId})`}>
           <rect x="8" y="8" width="144" height="194" fill="#F5EDD5"/>
-          <rect x="14" y="36" width="132" height="114" fill="none" stroke={c1} strokeWidth="0.8" opacity="0.35"/>
-          <StampArt id={data.code} c1={c1} c2={c2}/>
-          <line x1="14" y1="156" x2="146" y2="156" stroke={c1} strokeWidth="0.7" opacity="0.4"/>
-          <text x="80" y="166" textAnchor="middle" fill={c1} fontSize="8" fontFamily="'Space Mono', monospace" fontWeight="700" letterSpacing="0.3">
+          <rect x="14" y="36" width="132" height="114" fill={c1} fillOpacity="0.06" stroke={c1} strokeWidth="0.8" opacity="0.35"/>
+          <g clipPath={`url(#${clipId})`}>
+            <StampArt id={data.code} c1={c1} c2={c2}/>
+          </g>
+          <line x1="14" y1="154" x2="146" y2="154" stroke={c1} strokeWidth="0.7" opacity="0.4"/>
+          <text x="80" y="163" textAnchor="middle" fill={c1} fontSize="9" fontFamily="'Space Mono', monospace" fontWeight="700" letterSpacing="0.3">
             {data.title.length > 18 ? data.title.substring(0,17).toUpperCase()+'…' : data.title.toUpperCase()}
           </text>
-          <text x="80" y="177" textAnchor="middle" fill="#7A6850" fontSize="6.5" fontFamily="'Space Mono', monospace">{data.artist.toUpperCase()}</text>
-          <text x="80" y="188" textAnchor="middle" fill="#9A8060" fontSize="5.5" fontFamily="'Space Mono', monospace">
+          <text x="80" y="172" textAnchor="middle" fill={c1} fontSize="7" fontFamily="'Fraunces', serif" fontStyle="italic" opacity="0.85">{data.artist}</text>
+          <text x="80" y="180" textAnchor="middle" fill={c1} fontSize="5.5" fontFamily="'Space Mono', monospace" opacity="0.5">
             {data.venue.length > 25 ? data.venue.substring(0,25) : data.venue}
           </text>
+          <text x="80" y="190" textAnchor="middle" fill={c1} fontSize="6" fontFamily="'Space Mono', monospace" letterSpacing="1.2" opacity="0.7">{formatDate(data.date)}</text>
           <text x="18" y="200" fill={c1} fontSize="6.5" fontFamily="'Space Mono', monospace" opacity="0.55">1</text>
           <text x="142" y="200" textAnchor="end" fill={c1} fontSize="6.5" fontFamily="'Space Mono', monospace" opacity="0.55">APM</text>
         </g>
       </svg>
-      <div className="stamp-meta">
-        <span className="stamp-date">{formatDate(data.date)}</span>
-      </div>
     </div>
   );
 }
