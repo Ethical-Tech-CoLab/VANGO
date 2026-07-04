@@ -893,7 +893,7 @@ async function apiFetch(path, token, opts = {}) {
   });
 }
 
-function AuthScreen({ onAuth }) {
+function AuthScreen({ onAuth, onGuest }) {
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -950,6 +950,11 @@ function AuthScreen({ onAuth }) {
             {loading ? '…' : mode === 'login' ? 'Open my passport' : 'Create my passport'}
           </button>
         </form>
+        <div style={{ textAlign: 'center', marginTop: 18 }}>
+          <button type="button" className="demo-link" onClick={onGuest}>
+            View demo without signing in
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -967,6 +972,7 @@ export default function App() {
   const [lang, setLang] = useState("en");
   const [authToken, setAuthToken] = useState(() => localStorage.getItem('vango_token'));
   const [currentUser, setCurrentUser] = useState(null);
+  const [guestMode, setGuestMode] = useState(false);
 
   const t = TRANSLATIONS[lang];
 
@@ -1019,10 +1025,17 @@ export default function App() {
     }).catch(() => {});
   }
 
+  function handleGuest() {
+    setGuestMode(true);
+    setStamps(SEED_STAMPS);
+    setLoaded(true);
+  }
+
   function handleLogout() {
-    localStorage.removeItem('vango_token');
+    if (authToken) localStorage.removeItem('vango_token');
     setAuthToken(null);
     setCurrentUser(null);
+    setGuestMode(false);
     setStamps([]);
     setUserName('Explorer');
     setAvatar(null);
@@ -1034,20 +1047,22 @@ export default function App() {
   }
 
   async function handleResolve(code, entry) {
-    try {
-      const resp = await apiFetch('/stamps', authToken, { method: 'POST', body: { code } });
-      if (resp.status === 409) {
-        setToast('Already in your passport');
-        setTimeout(() => setToast(''), 2000);
+    if (!guestMode) {
+      try {
+        const resp = await apiFetch('/stamps', authToken, { method: 'POST', body: { code } });
+        if (resp.status === 409) {
+          setToast('Already in your passport');
+          setTimeout(() => setToast(''), 2000);
+          setShowScan(false);
+          return;
+        }
+        if (!resp.ok) throw new Error();
+      } catch {
+        setToast('Could not save stamp — check your connection');
+        setTimeout(() => setToast(''), 2200);
         setShowScan(false);
         return;
       }
-      if (!resp.ok) throw new Error();
-    } catch {
-      setToast('Could not save stamp — check your connection');
-      setTimeout(() => setToast(''), 2200);
-      setShowScan(false);
-      return;
     }
     const date = todayISO();
     const stamp = { id: `${code}-${date}`, code, title: entry.title, artist: entry.artist, venue: entry.venue, date, image: null };
@@ -1062,7 +1077,7 @@ export default function App() {
     setAvatar(newAvatar);
     setTheme(newTheme);
     setLang(newLang);
-    if (authToken) {
+    if (authToken && !guestMode) {
       try { await apiFetch('/me', authToken, { method: 'PUT', body: { name: newName, avatar_data: newAvatar } }); } catch {}
     }
     const nextT = TRANSLATIONS[newLang];
@@ -1082,11 +1097,11 @@ export default function App() {
     );
   }
 
-  if (!authToken) {
+  if (!authToken && !guestMode) {
     return (
       <div className="app-root">
         <style>{CSS}</style>
-        <AuthScreen onAuth={handleAuth} />
+        <AuthScreen onAuth={handleAuth} onGuest={handleGuest} />
       </div>
     );
   }
@@ -1671,5 +1686,18 @@ const CSS = `
   }
   .stamp { max-width: 140px; }
 }
+
+.demo-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.5px;
+  text-decoration: underline;
+  padding: 4px;
+}
+.demo-link:hover { color: var(--ink); }
 
 `;
