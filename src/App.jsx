@@ -205,121 +205,172 @@ function GenerativeArt({ seed, colors }) {
 /* ------------------------------------------------------------------ */
 
 function StampArt({ id, c1, c2 }) {
-  const cx = 80, cy = 97;
-  const x0 = 22, y0 = 44;
-  const w = 116, h = 106;
-
-  switch (id) {
-    case "CHROMA14":
-      return (
-        <g>
-          {[0,1,2,3,4].map(i => (
-            <rect key={i} x={x0} y={y0 + i*(h/5)} width={w} height={h/5}
-              fill={i%2===0 ? c1 : c2} opacity={0.10 + i*0.07}/>
-          ))}
-          <ellipse cx={cx} cy={cy} rx={42} ry={28} fill={c1} opacity={0.38}/>
-          <ellipse cx={cx+10} cy={cy-5} rx={28} ry={18} fill={c2} opacity={0.30}/>
-          <line x1={x0} y1={y0+h*0.3} x2={x0+w} y2={y0+h*0.7} stroke={c1} strokeWidth={3} opacity={0.55}/>
-          <line x1={x0} y1={y0+h*0.6} x2={x0+w} y2={y0+h*0.2} stroke={c2} strokeWidth={2} opacity={0.45}/>
-        </g>
-      );
-    case "FAULT02":
-      return (
-        <g>
-          <rect x={x0} y={y0} width={w} height={h} fill={c1} opacity={0.06}/>
-          <polyline points={`${x0},${y0+h*0.2} ${cx-15},${cy-10} ${cx+5},${cy+5} ${cx-5},${cy+20} ${x0+w},${y0+h*0.7}`}
-            fill="none" stroke={c1} strokeWidth={3} opacity={0.65}/>
-          <polyline points={`${x0},${y0+h*0.5} ${cx-20},${cy+5} ${cx+10},${cy-8} ${x0+w},${y0+h*0.4}`}
-            fill="none" stroke={c2} strokeWidth={1.5} opacity={0.50}/>
-          {[[35,60],[100,80],[60,120],[120,100]].map(([px,py],i)=>(
-            <circle key={i} cx={px} cy={py} r={4} fill={c1} opacity={0.4}/>
-          ))}
-        </g>
-      );
-    case "HOLLOW21":
-      return (
-        <g>
-          <rect x={x0} y={y0} width={w} height={h} fill={c1} opacity={0.04}/>
-          {[0,1,2,3].map(i=>(
-            <path key={i}
-              d={`M ${x0+8} ${cy+i*8-12} Q ${cx} ${y0+20+i*5} ${x0+w-8} ${cy+i*8-12}`}
-              fill="none" stroke={c1} strokeWidth={2-i*0.3} opacity={0.60-i*0.10}/>
-          ))}
-          {[1,2,3,4,5].map(i=>(
-            <ellipse key={i} cx={x0+i*(w/6)} cy={cy+5} rx={4} ry={10+i*2}
-              fill="none" stroke={c2} strokeWidth={1} opacity={0.35}/>
-          ))}
-          <circle cx={cx} cy={cy-20} r={16} fill="none" stroke={c1} strokeWidth={1.5} opacity={0.4}/>
-          <circle cx={cx} cy={cy-20} r={8} fill={c1} opacity={0.15}/>
-        </g>
-      );
-    case "ECHO07":
-      return (
-        <g>
-          {[48,36,24,12].map(r=>(
-            <ellipse key={r} cx={cx} cy={cy} rx={r} ry={r*0.6}
-              fill="none" stroke={c1} strokeWidth={1.2} opacity={0.25+0.12*(48-r)/36}/>
-          ))}
-          {[0,45,90,135,180,225,270,315].map((a,i)=>{
-            const rad = a*Math.PI/180;
-            const lx = cx + Math.cos(rad)*52;
-            const ly = cy + Math.sin(rad)*31;
-            return <ellipse key={i} cx={lx} cy={ly} rx={6} ry={4}
-              fill={i%2===0?c1:c2} opacity={0.45} transform={`rotate(${a},${lx},${ly})`}/>;
-          })}
-          <circle cx={cx} cy={cy} r={7} fill={c1} opacity={0.60}/>
-        </g>
-      );
-    case "VOID99":
-      return (
-        <g>
-          <rect x={x0} y={y0} width={w} height={h} fill={c1} opacity={0.08}/>
-          {[[30,55],[45,65],[90,50],[110,75],[130,58],[55,95],[120,100],[38,110],[102,115]].map(([px,py],i)=>(
-            <circle key={i} cx={px} cy={py} r={1.2+i%3} fill={c1} opacity={0.45+0.15*(i%3)}/>
-          ))}
-          <circle cx={cx} cy={y0+22} r={9} fill={c1} opacity={0.65}/>
-          <line x1={cx} y1={y0+31} x2={cx} y2={y0+57} stroke={c1} strokeWidth={3.5} strokeLinecap="round" opacity={0.65}/>
-          <line x1={cx-13} y1={y0+43} x2={cx+13} y2={y0+43} stroke={c1} strokeWidth={3} strokeLinecap="round" opacity={0.65}/>
-          <line x1={cx} y1={y0+57} x2={cx-10} y2={y0+75} stroke={c1} strokeWidth={3} strokeLinecap="round" opacity={0.65}/>
-          <line x1={cx} y1={y0+57} x2={cx+10} y2={y0+75} stroke={c1} strokeWidth={3} strokeLinecap="round" opacity={0.65}/>
-        </g>
-      );
-    case "BURA01":
-      return (
-        <g>
-          <rect x={x0} y={y0} width={w} height={h} fill={c1} opacity={0.04}/>
-          <ellipse cx={cx} cy={cy+18} rx={40} ry={28} fill={c1} opacity={0.35}/>
-          <ellipse cx={cx} cy={cy+18} rx={40} ry={28} fill="none" stroke={c1} strokeWidth={2.5} opacity={0.60}/>
-          <rect x={cx-13} y={y0+16} width={26} height={22} fill={c1} opacity={0.30}/>
-          <rect x={cx-13} y={y0+16} width={26} height={22} fill="none" stroke={c1} strokeWidth={1.5} opacity={0.60}/>
-          <ellipse cx={cx} cy={y0+16} rx={18} ry={5} fill={c1} opacity={0.50}/>
-          {[0,1,2].map(i=>(
-            <ellipse key={i} cx={cx} cy={cy+4+i*10} rx={40-i*6} ry={4}
-              fill="none" stroke={c2} strokeWidth={1} opacity={0.30}/>
-          ))}
-          {[0,1,2,3,4,5].map(i=>{
-            const a = (i/6)*Math.PI*2;
-            return <circle key={i} cx={cx+Math.cos(a)*22} cy={cy+18+Math.sin(a)*14} r={3.5} fill={c2} opacity={0.40}/>;
-          })}
-        </g>
-      );
-    case "DAVID01":
-    default:
-      return (
-        <g>
-          <rect x={x0} y={y0} width={w} height={h} fill={c1} opacity={0.04}/>
-          <rect x={cx-22} y={y0+h-18} width={44} height={14} fill={c1} opacity={0.40}/>
-          <path d={`M ${cx-13},${y0+h-20} L ${cx-15},${y0+34} Q ${cx},${y0+31} ${cx+15},${y0+34} L ${cx+13},${y0+h-20} Z`}
-            fill={c1} opacity={0.45}/>
-          <line x1={cx-15} y1={y0+45} x2={cx-30} y2={y0+74} stroke={c1} strokeWidth={5.5} strokeLinecap="round" opacity={0.45}/>
-          <line x1={cx+15} y1={y0+45} x2={cx+22} y2={y0+67} stroke={c1} strokeWidth={5.5} strokeLinecap="round" opacity={0.45}/>
-          <ellipse cx={cx} cy={y0+24} rx={12} ry={14} fill={c1} opacity={0.55}/>
-          <line x1={cx-32} y1={y0+h-20} x2={cx+32} y2={y0+h-20} stroke={c1} strokeWidth={1} opacity={0.40}/>
-        </g>
-      );
+  if (id === 'DAVID01') {
+    return (
+      <g>
+        {Array.from({length:14},(_,i)=>(
+          <line key={i} x1="14" y1={32+i*8} x2="146" y2={32+i*8} stroke={c1} strokeWidth="0.3" opacity="0.1"/>
+        ))}
+        <path d="M63,60 Q64,80 63,90 L63,120 L97,120 L97,90 Q96,80 97,60 Z" fill={c1} opacity="0.6"/>
+        <rect x="50" y="132" width="60" height="8" fill={c1} opacity="0.65"/>
+        <rect x="46" y="127" width="68" height="6" fill={c1} opacity="0.45"/>
+        <path d="M71,118 Q70,124 69,130" stroke={c1} strokeWidth="5.5" strokeLinecap="round" fill="none"/>
+        <path d="M89,118 Q90,124 91,130" stroke={c1} strokeWidth="5.5" strokeLinecap="round" fill="none"/>
+        <path d="M67,94 Q68,118 71,118 L89,118 Q92,118 93,94" fill={c1} opacity="0.6" stroke={c1} strokeWidth="2.5"/>
+        <path d="M64,66 Q66,94 67,94 L93,94 Q94,94 96,66" fill={c1} opacity="0.55" stroke={c1} strokeWidth="3"/>
+        {Array.from({length:6},(_,i)=>(
+          <line key={i} x1={67+i*4.5} y1="68" x2={65+i*4.5} y2="93" stroke={c1} strokeWidth="0.7" opacity="0.2"/>
+        ))}
+        <path d="M66,70 Q57,81 52,96" stroke={c1} strokeWidth="4.5" strokeLinecap="round" fill="none"/>
+        <circle cx="51" cy="98" r="4" fill={c1} opacity="0.85"/>
+        <path d="M94,70 Q100,81 104,94" stroke={c1} strokeWidth="4.5" strokeLinecap="round" fill="none"/>
+        <rect x="76" y="58" width="8" height="10" fill={c1} opacity="0.8" rx="1"/>
+        <ellipse cx="80" cy="46" rx="12" ry="13.5" fill={c1} opacity="0.8"/>
+        <path d="M68,43 Q70,33 80,34 Q90,33 92,43" fill={c2} opacity="0.9" stroke={c1} strokeWidth="0.8"/>
+        <ellipse cx="80" cy="48" rx="8" ry="9" fill="#F5EDD5" opacity="0.15"/>
+        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1.5">FIRENZE · 1504</text>
+      </g>
+    );
   }
+  if (id === 'BURA01') {
+    return (
+      <g>
+        {Array.from({length:12},(_,i)=>(
+          <line key={i} x1="14" y1={40+i*8} x2="146" y2={40+i*8} stroke={c1} strokeWidth="0.3" opacity="0.1"/>
+        ))}
+        <path d="M44,105 Q42,76 80,65 Q118,76 116,105 Q116,130 80,132 Q44,130 44,105 Z" fill={c1} opacity="0.55"/>
+        <ellipse cx="80" cy="132" rx="32" ry="5" fill={c1} opacity="0.12"/>
+        <ellipse cx="80" cy="128" rx="22" ry="5" fill={c1} opacity="0.6" stroke={c1} strokeWidth="1"/>
+        <path d="M46,105 Q44,78 80,68 Q116,78 114,105 Q114,128 80,130 Q46,128 46,105 Z" fill={c1} opacity="0.55" stroke={c1} strokeWidth="2.5"/>
+        <path d="M71,68 Q73,56 80,54 Q87,56 89,68" fill={c1} opacity="0.55" stroke={c1} strokeWidth="1.5"/>
+        <ellipse cx="80" cy="54" rx="9.5" ry="3.5" fill={c1} opacity="0.7" stroke={c1} strokeWidth="1.2"/>
+        <ellipse cx="80" cy="84" rx="31" ry="9" fill="none" stroke={c1} strokeWidth="1" strokeDasharray="3,2" opacity="0.6"/>
+        <ellipse cx="80" cy="100" rx="34" ry="11" fill="none" stroke={c1} strokeWidth="1" strokeDasharray="2,3" opacity="0.5"/>
+        <ellipse cx="80" cy="116" rx="30" ry="9" fill="none" stroke={c1} strokeWidth="1" strokeDasharray="3,2" opacity="0.6"/>
+        {[0,1,2,3,4,5].map(i=>(
+          <circle key={i} cx={80+30*Math.cos(i*Math.PI/3)} cy={97+16*Math.sin(i*Math.PI/3)} r="2.5" fill={c1} opacity="0.75"/>
+        ))}
+        {[60,72,88,100].map(x=>(
+          <g key={x} transform={`translate(${x},100)`}>
+            <line x1="-3" y1="-3" x2="3" y2="3" stroke={c1} strokeWidth="1.2" opacity="0.7"/>
+            <line x1="3" y1="-3" x2="-3" y2="3" stroke={c1} strokeWidth="1.2" opacity="0.7"/>
+          </g>
+        ))}
+        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">NIGER · 2ND–11TH C.</text>
+      </g>
+    );
+  }
+  if (id === 'CHROMA14') {
+    return (
+      <g>
+        <circle cx="80" cy="80" r="28" fill={c1} opacity="0.35"/>
+        {[0,1,2,3,4,5,6,7,8,9].map(i=>(
+          <path key={i} d={`M ${22+i*4},${90-i*2} Q 80,${38+i*5} ${138-i*4},${90-i*2}`} fill="none" stroke={i%2===0?c1:c2} strokeWidth={2.5-i*0.18} opacity={0.75-i*0.05}/>
+        ))}
+        <circle cx="80" cy="80" r="22" fill="none" stroke={c1} strokeWidth="2" opacity="0.6"/>
+        <circle cx="80" cy="80" r="12" fill={c1} opacity="0.5"/>
+        <circle cx="80" cy="80" r="5" fill={c1} opacity="0.85"/>
+        {[0,1,2,3,4,5,6].map(i=>(
+          <circle key={i} cx={36+i*16} cy={115+Math.sin(i)*5} r="2.2" fill={i%2===0?c1:c2} opacity="0.65"/>
+        ))}
+        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">KINETIC · COLOUR</text>
+      </g>
+    );
+  }
+  if (id === 'FAULT02') {
+    const layers = [
+      {y1:34,y2:50,odd:false},{y1:50,y2:63,odd:true},{y1:63,y2:74,odd:false},
+      {y1:74,y2:86,odd:true},{y1:86,y2:98,odd:false},{y1:98,y2:110,odd:true},
+      {y1:110,y2:123,odd:false},{y1:123,y2:138,odd:true},
+    ];
+    return (
+      <g>
+        <path d="M 76,34 Q 74,60 82,88 Q 78,112 75,138 L84,138 Q 87,112 83,88 Q 90,60 84,34 Z" fill={c1} opacity="0.55"/>
+        {layers.map((l,i)=>(
+          <rect key={i} x="14" y={l.y1} width="132" height={l.y2-l.y1} fill={l.odd?c2:c1} opacity="0.2"/>
+        ))}
+        {layers.map((l,i)=>(
+          <line key={i} x1="14" y1={l.y2} x2="146" y2={l.y2} stroke={c1} strokeWidth="1" opacity="0.65"/>
+        ))}
+        {[36,65,87,112].map((y,gi)=>(
+          Array.from({length:11},(_,j)=>(
+            <line key={`${gi}-${j}`} x1={16+j*11} y1={y} x2={20+j*11} y2={y+11} stroke={c1} strokeWidth="0.6" opacity="0.25"/>
+          ))
+        ))}
+        <path d="M 79,34 Q 76,62 83,90 Q 79,112 77,138" stroke={c1} strokeWidth="2.5" fill="none" opacity="0.9"/>
+        <path d="M 83,34 Q 80,62 87,90 Q 83,112 81,138" stroke={c1} strokeWidth="1.5" fill="none" opacity="0.5"/>
+        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">GEOLOGICAL</text>
+      </g>
+    );
+  }
+  if (id === 'HOLLOW21') {
+    return (
+      <g>
+        <path d="M 80,36 Q 104,52 110,86 Q 113,115 80,126 Q 47,115 50,86 Q 56,52 80,36 Z" fill={c1} opacity="0.55"/>
+        <path d="M 80,38 Q 102,54 107,86 Q 110,112 80,122 Q 50,112 53,86 Q 58,54 80,38 Z" fill={c1} opacity="0.5" stroke={c1} strokeWidth="2.5"/>
+        <ellipse cx="80" cy="122" rx="28" ry="7" fill="none" stroke={c1} strokeWidth="2" opacity="0.7"/>
+        <path d="M 80,53 Q 94,65 96,89 Q 96,110 80,115 Q 64,110 64,89 Q 66,65 80,53 Z" fill="#F5EDD5" opacity="0.3"/>
+        {[16,28,40].map((r,i)=>(
+          <path key={i} d={`M ${80-r-38},${90+r} Q ${80-r},${90-r} ${80+r},${90+r}`} fill="none" stroke={c2} strokeWidth={2-i*0.3} opacity={0.75-i*0.15} strokeDasharray={i===2?"4 2":"0"}/>
+        ))}
+        {[-24,-8,8,24].map((x,i)=>(
+          <circle key={i} cx={80+x} cy="132" r="3.5" fill={c1} opacity={0.6+i*0.08}/>
+        ))}
+        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">RESONANCE</text>
+      </g>
+    );
+  }
+  if (id === 'ECHO07') {
+    return (
+      <g>
+        <circle cx="80" cy="88" r="20" fill={c2} opacity="0.55"/>
+        {[10,20,30,42,55].map((r,i)=>(
+          <circle key={i} cx="80" cy="88" r={r} fill="none" stroke={c1} strokeWidth={1.8-i*0.15} opacity={0.78-i*0.1}/>
+        ))}
+        <line x1="80" y1="133" x2="80" y2="68" stroke={c1} strokeWidth="2" opacity="0.8"/>
+        <line x1="80" y1="113" x2="54" y2="90" stroke={c1} strokeWidth="1.8" opacity="0.75"/>
+        <line x1="80" y1="103" x2="106" y2="80" stroke={c1} strokeWidth="1.8" opacity="0.75"/>
+        <line x1="80" y1="90" x2="60" y2="68" stroke={c1} strokeWidth="1.5" opacity="0.65"/>
+        <line x1="80" y1="84" x2="100" y2="64" stroke={c1} strokeWidth="1.5" opacity="0.65"/>
+        {[
+          {cx:52,cy:88,rx:9,ry:5,a:-30},{cx:108,cy:78,rx:9,ry:5,a:20},
+          {cx:58,cy:66,rx:8,ry:4,a:-45},{cx:102,cy:62,rx:8,ry:4,a:40},
+          {cx:80,cy:66,rx:7,ry:11,a:0},
+        ].map((l,i)=>(
+          <ellipse key={i} cx={l.cx} cy={l.cy} rx={l.rx} ry={l.ry} fill={c1} opacity={0.62+i*0.05} transform={`rotate(${l.a},${l.cx},${l.cy})`}/>
+        ))}
+        <circle cx="80" cy="88" r="5.5" fill={c2} opacity="0.9"/>
+        <line x1="34" y1="133" x2="126" y2="133" stroke={c1} strokeWidth="1.5" opacity="0.7"/>
+        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">BOTANICAL</text>
+      </g>
+    );
+  }
+  if (id === 'VOID99') {
+    return (
+      <g>
+        <rect x="14" y="32" width="132" height="114" fill={c1} opacity="0.88"/>
+        {[[30,45],[55,38],[90,42],[118,48],[130,60],[35,70],[105,58],[25,90],[45,105],[70,55],[115,100],[138,80],[60,120],[100,115],[135,40],[22,62],[140,105],[50,130],[120,130],[75,35],[90,120]].map(([x,y],i)=>(
+          <circle key={i} cx={x} cy={y} r={i%4===0?1.8:0.9} fill="#F5EDD5" opacity={0.5+((i*37)%100)/200}/>
+        ))}
+        {[42,30,20,12].map((r,i)=>(
+          <circle key={i} cx="80" cy="87" r={r} fill="none" stroke="#F5EDD5" strokeWidth="1" opacity={0.35+i*0.18}/>
+        ))}
+        <circle cx="80" cy="99" r="4.5" fill="#F5EDD5" opacity="0.9"/>
+        <line x1="80" y1="103" x2="80" y2="116" stroke="#F5EDD5" strokeWidth="2.5" opacity="0.85"/>
+        <line x1="80" y1="110" x2="73" y2="118" stroke="#F5EDD5" strokeWidth="2" opacity="0.8"/>
+        <line x1="80" y1="110" x2="87" y2="118" stroke="#F5EDD5" strokeWidth="2" opacity="0.8"/>
+        <line x1="80" y1="105" x2="73" y2="110" stroke="#F5EDD5" strokeWidth="2" opacity="0.7"/>
+        <line x1="80" y1="105" x2="87" y2="110" stroke="#F5EDD5" strokeWidth="2" opacity="0.7"/>
+        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill="#F5EDD5" opacity="0.65" letterSpacing="1">DEEP SPACE</text>
+      </g>
+    );
+  }
+  return (
+    <foreignObject x="14" y="32" width="132" height="114">
+      <GenerativeArt seed={id} colors={[c1, c2]} />
+    </foreignObject>
+  );
 }
-
 /* Stamp                                                              */
 /* ------------------------------------------------------------------ */
 
@@ -1158,7 +1209,7 @@ const CSS = `
   inset: 0;
   padding: 22px 18px 46px;
   overflow-y: auto;
-  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0 1px, transparent 1px 26px);
+  background: radial-gradient(ellipse 120% 120% at 50% 0%, #F5EDD5 0%, var(--paper) 55%, #D4C49A 100%);
 }
 
 .bio-page { display: flex; flex-direction: column; }
