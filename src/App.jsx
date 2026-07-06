@@ -148,11 +148,11 @@ function mulberry32(seed) {
 }
 
 const PALETTE = [
-  ["#2E6B5E", "#1A3D35"],  // Deep Verdigris
-  ["#8B3A3A", "#5C2020"],  // Crimson Wax
-  ["#B8863B", "#7A5A22"],  // Antique Gold
-  ["#3A5C8C", "#1E3454"],  // Prussian Blue
-  ["#6B4C2A", "#3D2A14"],  // Sepia Brown
+  ["#14E0C4", "#0B8F7C"],
+  ["#FF4F8B", "#B8285C"],
+  ["#B8863B", "#7A5A22"],
+  ["#6C7BFF", "#3A44B0"],
+  ["#F2C14E", "#B98B1E"],
 ];
 
 function formatDate(iso) {
@@ -203,213 +203,80 @@ function GenerativeArt({ seed, colors }) {
 /* Stamp                                                              */
 /* ------------------------------------------------------------------ */
 
-function StampArt({ id, c1, c2 }) {
-  if (id === 'DAVID01') {
-    return (
-      <g>
-        {Array.from({length:14},(_,i)=>(
-          <line key={i} x1="14" y1={32+i*8} x2="146" y2={32+i*8} stroke={c1} strokeWidth="0.3" opacity="0.1"/>
-        ))}
-        <path d="M63,60 Q64,80 63,90 L63,120 L97,120 L97,90 Q96,80 97,60 Z" fill={c1} opacity="0.6"/>
-        <rect x="50" y="132" width="60" height="8" fill={c1} opacity="0.65"/>
-        <rect x="46" y="127" width="68" height="6" fill={c1} opacity="0.45"/>
-        <path d="M71,118 Q70,124 69,130" stroke={c1} strokeWidth="5.5" strokeLinecap="round" fill="none"/>
-        <path d="M89,118 Q90,124 91,130" stroke={c1} strokeWidth="5.5" strokeLinecap="round" fill="none"/>
-        <path d="M67,94 Q68,118 71,118 L89,118 Q92,118 93,94" fill={c1} opacity="0.6" stroke={c1} strokeWidth="2.5"/>
-        <path d="M64,66 Q66,94 67,94 L93,94 Q94,94 96,66" fill={c1} opacity="0.55" stroke={c1} strokeWidth="3"/>
-        {Array.from({length:6},(_,i)=>(
-          <line key={i} x1={67+i*4.5} y1="68" x2={65+i*4.5} y2="93" stroke={c1} strokeWidth="0.7" opacity="0.2"/>
-        ))}
-        <path d="M66,70 Q57,81 52,96" stroke={c1} strokeWidth="4.5" strokeLinecap="round" fill="none"/>
-        <circle cx="51" cy="98" r="4" fill={c1} opacity="0.85"/>
-        <path d="M94,70 Q100,81 104,94" stroke={c1} strokeWidth="4.5" strokeLinecap="round" fill="none"/>
-        <rect x="76" y="58" width="8" height="10" fill={c1} opacity="0.8" rx="1"/>
-        <ellipse cx="80" cy="46" rx="12" ry="13.5" fill={c1} opacity="0.8"/>
-        <path d="M68,43 Q70,33 80,34 Q90,33 92,43" fill={c2} opacity="0.9" stroke={c1} strokeWidth="0.8"/>
-        <ellipse cx="80" cy="48" rx="8" ry="9" fill="#F5EDD5" opacity="0.15"/>
-        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1.5">FIRENZE · 1504</text>
-      </g>
-    );
-  }
-  if (id === 'BURA01') {
-    return (
-      <g>
-        {Array.from({length:12},(_,i)=>(
-          <line key={i} x1="14" y1={40+i*8} x2="146" y2={40+i*8} stroke={c1} strokeWidth="0.3" opacity="0.1"/>
-        ))}
-        <path d="M44,105 Q42,76 80,65 Q118,76 116,105 Q116,130 80,132 Q44,130 44,105 Z" fill={c1} opacity="0.55"/>
-        <ellipse cx="80" cy="132" rx="32" ry="5" fill={c1} opacity="0.12"/>
-        <ellipse cx="80" cy="128" rx="22" ry="5" fill={c1} opacity="0.6" stroke={c1} strokeWidth="1"/>
-        <path d="M46,105 Q44,78 80,68 Q116,78 114,105 Q114,128 80,130 Q46,128 46,105 Z" fill={c1} opacity="0.55" stroke={c1} strokeWidth="2.5"/>
-        <path d="M71,68 Q73,56 80,54 Q87,56 89,68" fill={c1} opacity="0.55" stroke={c1} strokeWidth="1.5"/>
-        <ellipse cx="80" cy="54" rx="9.5" ry="3.5" fill={c1} opacity="0.7" stroke={c1} strokeWidth="1.2"/>
-        <ellipse cx="80" cy="84" rx="31" ry="9" fill="none" stroke={c1} strokeWidth="1" strokeDasharray="3,2" opacity="0.6"/>
-        <ellipse cx="80" cy="100" rx="34" ry="11" fill="none" stroke={c1} strokeWidth="1" strokeDasharray="2,3" opacity="0.5"/>
-        <ellipse cx="80" cy="116" rx="30" ry="9" fill="none" stroke={c1} strokeWidth="1" strokeDasharray="3,2" opacity="0.6"/>
-        {[0,1,2,3,4,5].map(i=>(
-          <circle key={i} cx={80+30*Math.cos(i*Math.PI/3)} cy={97+16*Math.sin(i*Math.PI/3)} r="2.5" fill={c1} opacity="0.75"/>
-        ))}
-        {[60,72,88,100].map(x=>(
-          <g key={x} transform={`translate(${x},100)`}>
-            <line x1="-3" y1="-3" x2="3" y2="3" stroke={c1} strokeWidth="1.2" opacity="0.7"/>
-            <line x1="3" y1="-3" x2="-3" y2="3" stroke={c1} strokeWidth="1.2" opacity="0.7"/>
-          </g>
-        ))}
-        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">NIGER · 2ND–11TH C.</text>
-      </g>
-    );
-  }
-  if (id === 'CHROMA14') {
-    return (
-      <g>
-        <circle cx="80" cy="80" r="28" fill={c1} opacity="0.35"/>
-        {[0,1,2,3,4,5,6,7,8,9].map(i=>(
-          <path key={i} d={`M ${22+i*4},${90-i*2} Q 80,${38+i*5} ${138-i*4},${90-i*2}`} fill="none" stroke={i%2===0?c1:c2} strokeWidth={2.5-i*0.18} opacity={0.75-i*0.05}/>
-        ))}
-        <circle cx="80" cy="80" r="22" fill="none" stroke={c1} strokeWidth="2" opacity="0.6"/>
-        <circle cx="80" cy="80" r="12" fill={c1} opacity="0.5"/>
-        <circle cx="80" cy="80" r="5" fill={c1} opacity="0.85"/>
-        {[0,1,2,3,4,5,6].map(i=>(
-          <circle key={i} cx={36+i*16} cy={115+Math.sin(i)*5} r="2.2" fill={i%2===0?c1:c2} opacity="0.65"/>
-        ))}
-        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">KINETIC · COLOUR</text>
-      </g>
-    );
-  }
-  if (id === 'FAULT02') {
-    const layers = [
-      {y1:34,y2:50,odd:false},{y1:50,y2:63,odd:true},{y1:63,y2:74,odd:false},
-      {y1:74,y2:86,odd:true},{y1:86,y2:98,odd:false},{y1:98,y2:110,odd:true},
-      {y1:110,y2:123,odd:false},{y1:123,y2:138,odd:true},
-    ];
-    return (
-      <g>
-        <path d="M 76,34 Q 74,60 82,88 Q 78,112 75,138 L84,138 Q 87,112 83,88 Q 90,60 84,34 Z" fill={c1} opacity="0.55"/>
-        {layers.map((l,i)=>(
-          <rect key={i} x="14" y={l.y1} width="132" height={l.y2-l.y1} fill={l.odd?c2:c1} opacity="0.2"/>
-        ))}
-        {layers.map((l,i)=>(
-          <line key={i} x1="14" y1={l.y2} x2="146" y2={l.y2} stroke={c1} strokeWidth="1" opacity="0.65"/>
-        ))}
-        {[36,65,87,112].map((y,gi)=>(
-          Array.from({length:11},(_,j)=>(
-            <line key={`${gi}-${j}`} x1={16+j*11} y1={y} x2={20+j*11} y2={y+11} stroke={c1} strokeWidth="0.6" opacity="0.25"/>
-          ))
-        ))}
-        <path d="M 79,34 Q 76,62 83,90 Q 79,112 77,138" stroke={c1} strokeWidth="2.5" fill="none" opacity="0.9"/>
-        <path d="M 83,34 Q 80,62 87,90 Q 83,112 81,138" stroke={c1} strokeWidth="1.5" fill="none" opacity="0.5"/>
-        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">GEOLOGICAL</text>
-      </g>
-    );
-  }
-  if (id === 'HOLLOW21') {
-    return (
-      <g>
-        <path d="M 80,36 Q 104,52 110,86 Q 113,115 80,126 Q 47,115 50,86 Q 56,52 80,36 Z" fill={c1} opacity="0.55"/>
-        <path d="M 80,38 Q 102,54 107,86 Q 110,112 80,122 Q 50,112 53,86 Q 58,54 80,38 Z" fill={c1} opacity="0.5" stroke={c1} strokeWidth="2.5"/>
-        <ellipse cx="80" cy="122" rx="28" ry="7" fill="none" stroke={c1} strokeWidth="2" opacity="0.7"/>
-        <path d="M 80,53 Q 94,65 96,89 Q 96,110 80,115 Q 64,110 64,89 Q 66,65 80,53 Z" fill="#F5EDD5" opacity="0.3"/>
-        {[16,28,40].map((r,i)=>(
-          <path key={i} d={`M ${80-r-38},${90+r} Q ${80-r},${90-r} ${80+r},${90+r}`} fill="none" stroke={c2} strokeWidth={2-i*0.3} opacity={0.75-i*0.15} strokeDasharray={i===2?"4 2":"0"}/>
-        ))}
-        {[-24,-8,8,24].map((x,i)=>(
-          <circle key={i} cx={80+x} cy="132" r="3.5" fill={c1} opacity={0.6+i*0.08}/>
-        ))}
-        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">RESONANCE</text>
-      </g>
-    );
-  }
-  if (id === 'ECHO07') {
-    return (
-      <g>
-        <circle cx="80" cy="88" r="20" fill={c2} opacity="0.55"/>
-        {[10,20,30,42,55].map((r,i)=>(
-          <circle key={i} cx="80" cy="88" r={r} fill="none" stroke={c1} strokeWidth={1.8-i*0.15} opacity={0.78-i*0.1}/>
-        ))}
-        <line x1="80" y1="133" x2="80" y2="68" stroke={c1} strokeWidth="2" opacity="0.8"/>
-        <line x1="80" y1="113" x2="54" y2="90" stroke={c1} strokeWidth="1.8" opacity="0.75"/>
-        <line x1="80" y1="103" x2="106" y2="80" stroke={c1} strokeWidth="1.8" opacity="0.75"/>
-        <line x1="80" y1="90" x2="60" y2="68" stroke={c1} strokeWidth="1.5" opacity="0.65"/>
-        <line x1="80" y1="84" x2="100" y2="64" stroke={c1} strokeWidth="1.5" opacity="0.65"/>
-        {[
-          {cx:52,cy:88,rx:9,ry:5,a:-30},{cx:108,cy:78,rx:9,ry:5,a:20},
-          {cx:58,cy:66,rx:8,ry:4,a:-45},{cx:102,cy:62,rx:8,ry:4,a:40},
-          {cx:80,cy:66,rx:7,ry:11,a:0},
-        ].map((l,i)=>(
-          <ellipse key={i} cx={l.cx} cy={l.cy} rx={l.rx} ry={l.ry} fill={c1} opacity={0.62+i*0.05} transform={`rotate(${l.a},${l.cx},${l.cy})`}/>
-        ))}
-        <circle cx="80" cy="88" r="5.5" fill={c2} opacity="0.9"/>
-        <line x1="34" y1="133" x2="126" y2="133" stroke={c1} strokeWidth="1.5" opacity="0.7"/>
-        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill={c1} opacity="0.6" letterSpacing="1">BOTANICAL</text>
-      </g>
-    );
-  }
-  if (id === 'VOID99') {
-    return (
-      <g>
-        <rect x="14" y="32" width="132" height="114" fill={c1} opacity="0.88"/>
-        {[[30,45],[55,38],[90,42],[118,48],[130,60],[35,70],[105,58],[25,90],[45,105],[70,55],[115,100],[138,80],[60,120],[100,115],[135,40],[22,62],[140,105],[50,130],[120,130],[75,35],[90,120]].map(([x,y],i)=>(
-          <circle key={i} cx={x} cy={y} r={i%4===0?1.8:0.9} fill="#F5EDD5" opacity={0.5+((i*37)%100)/200}/>
-        ))}
-        {[42,30,20,12].map((r,i)=>(
-          <circle key={i} cx="80" cy="87" r={r} fill="none" stroke="#F5EDD5" strokeWidth="1" opacity={0.35+i*0.18}/>
-        ))}
-        <circle cx="80" cy="99" r="4.5" fill="#F5EDD5" opacity="0.9"/>
-        <line x1="80" y1="103" x2="80" y2="116" stroke="#F5EDD5" strokeWidth="2.5" opacity="0.85"/>
-        <line x1="80" y1="110" x2="73" y2="118" stroke="#F5EDD5" strokeWidth="2" opacity="0.8"/>
-        <line x1="80" y1="110" x2="87" y2="118" stroke="#F5EDD5" strokeWidth="2" opacity="0.8"/>
-        <line x1="80" y1="105" x2="73" y2="110" stroke="#F5EDD5" strokeWidth="2" opacity="0.7"/>
-        <line x1="80" y1="105" x2="87" y2="110" stroke="#F5EDD5" strokeWidth="2" opacity="0.7"/>
-        <text x="80" y="144" textAnchor="middle" fontSize="6" fontFamily="'Space Mono', monospace" fill="#F5EDD5" opacity="0.65" letterSpacing="1">DEEP SPACE</text>
-      </g>
-    );
-  }
-  return (
-    <foreignObject x="14" y="32" width="132" height="114">
-      <GenerativeArt seed={id} colors={[c1, c2]} />
-    </foreignObject>
-  );
-}
 function Stamp({ data, index }) {
   const [c1, c2] = PALETTE[hashSeed(data.id) % PALETTE.length];
-  const maskId = `perf-${data.id}`;
-  const clipId = `clip-${data.id}`;
-  const topXs = Array.from({length: 11}, (_, i) => Math.round(16 + i * 12.8));
-  const sideYs = Array.from({length: 15}, (_, i) => Math.round(16 + i * 12.4));
+  const topPath = `top-arc-${data.id}`;
+  const botPath = `bot-arc-${data.id}`;
+
   return (
     <div className="stamp">
-      <svg viewBox="0 0 160 210" className="stamp-svg">
+      <svg viewBox="0 0 200 200" className="stamp-svg">
         <defs>
-          <mask id={maskId}>
-            <rect x="0" y="0" width="160" height="210" fill="white"/>
-            {topXs.map(x => <circle key={`t${x}`} cx={x} cy="8" r="6" fill="black"/>)}
-            {topXs.map(x => <circle key={`b${x}`} cx={x} cy="202" r="6" fill="black"/>)}
-            {sideYs.map(y => <circle key={`l${y}`} cx="8" cy={y} r="6" fill="black"/>)}
-            {sideYs.map(y => <circle key={`r${y}`} cx="152" cy={y} r="6" fill="black"/>)}
-          </mask>
-          <clipPath id={clipId}>
-            <rect x="22" y="44" width="116" height="106"/>
+          <path id={topPath} d="M 26,100 A 74,74 0 0 1 174,100" fill="none" />
+          <path id={botPath} d="M 174,102 A 74,74 0 0 1 26,102" fill="none" />
+          <clipPath id={`clip-${data.id}`}>
+            <circle cx="100" cy="100" r="60" />
           </clipPath>
+          <radialGradient id={`ring-${data.id}`} cx="50%" cy="50%" r="50%">
+            <stop offset="80%" stopColor={c1} stopOpacity="0" />
+            <stop offset="100%" stopColor={c1} stopOpacity="0.9" />
+          </radialGradient>
         </defs>
-        <g mask={`url(#${maskId})`}>
-          <rect x="8" y="8" width="144" height="194" fill="#F5EDD5"/>
-          <rect x="14" y="36" width="132" height="114" fill={c1} fillOpacity="0.06" stroke={c1} strokeWidth="0.8" opacity="0.35"/>
-          <g clipPath={`url(#${clipId})`}>
-            <StampArt id={data.code} c1={c1} c2={c2}/>
-          </g>
-          <line x1="14" y1="154" x2="146" y2="154" stroke={c1} strokeWidth="0.7" opacity="0.4"/>
-          <text x="80" y="163" textAnchor="middle" fill={c1} fontSize="9" fontFamily="'Space Mono', monospace" fontWeight="700" letterSpacing="0.3">
-            {data.title.length > 18 ? data.title.substring(0,17).toUpperCase()+'…' : data.title.toUpperCase()}
-          </text>
-          <text x="80" y="172" textAnchor="middle" fill={c1} fontSize="7" fontFamily="'Fraunces', serif" fontStyle="italic" opacity="0.85">{data.artist}</text>
-          <text x="80" y="180" textAnchor="middle" fill={c1} fontSize="5.5" fontFamily="'Space Mono', monospace" opacity="0.5">
-            {data.venue.length > 25 ? data.venue.substring(0,25) : data.venue}
-          </text>
-          <text x="80" y="190" textAnchor="middle" fill={c1} fontSize="6" fontFamily="'Space Mono', monospace" letterSpacing="1.2" opacity="0.7">{formatDate(data.date)}</text>
-          <text x="18" y="200" fill={c1} fontSize="6.5" fontFamily="'Space Mono', monospace" opacity="0.55">1</text>
-          <text x="142" y="200" textAnchor="end" fill={c1} fontSize="6.5" fontFamily="'Space Mono', monospace" opacity="0.55">APM</text>
+
+        <circle cx="100" cy="100" r="94" fill="#EDE8DC" opacity="0.92"/>
+        <circle cx="100" cy="100" r="94" fill="none" stroke={c1} strokeWidth="1.5" strokeDasharray="2 4" opacity="0.8" />
+        <circle cx="100" cy="100" r="86" fill="none" stroke="#B8863B" strokeWidth="2" />
+        {[
+          {x1:42,y1:55,x2:46,y2:51,c:"#8B2020"},
+          {x1:130,y1:148,x2:135,y2:152,c:"#1A3080"},
+          {x1:65,y1:150,x2:69,y2:146,c:"#1A5020"},
+          {x1:148,y1:75,x2:153,y2:71,c:"#8B2020"},
+          {x1:55,y1:130,x2:59,y2:134,c:"#1A3080"},
+          {x1:120,y1:55,x2:125,y2:52,c:"#1A5020"},
+          {x1:72,y1:160,x2:76,y2:156,c:"#7A1A1A"},
+        ].map((f,i)=>(
+          <line key={i} x1={f.x1} y1={f.y1} x2={f.x2} y2={f.y2} stroke={f.c} strokeWidth="0.6" opacity="0.38"/>
+        ))}
+
+        <g clipPath={`url(#clip-${data.id})`}>
+          {data.image ? (
+            <image
+              href={data.image}
+              x="34" y="34" width="132" height="132"
+              preserveAspectRatio="xMidYMid slice"
+              style={{ filter: "grayscale(0.55) sepia(0.35) contrast(1.05)" }}
+            />
+          ) : (
+            <foreignObject x="40" y="40" width="120" height="120">
+              <GenerativeArt seed={data.id} colors={[c1, c2]} />
+            </foreignObject>
+          )}
+          <circle cx="100" cy="100" r="60" fill={c1} opacity="0.08" />
         </g>
+
+        <circle cx="100" cy="100" r="60" fill="none" stroke={c1} strokeWidth="1.5" opacity="0.9" />
+        <circle cx="100" cy="100" r="60" fill={`url(#ring-${data.id})`} opacity="0.5" />
+
+        <text fill="#2B2418" fontSize="10.5" letterSpacing="2" fontFamily="'Space Mono', monospace" fontWeight="700">
+          <textPath href={`#${topPath}`} startOffset="50%" textAnchor="middle">
+            {data.title.toUpperCase()}
+          </textPath>
+        </text>
+        <text fill="#2B2418" fontSize="8.5" letterSpacing="1.5" fontFamily="'Space Mono', monospace">
+          <textPath href={`#${botPath}`} startOffset="50%" textAnchor="middle">
+            {data.venue.toUpperCase()}
+          </textPath>
+        </text>
+
+        <circle cx="100" cy="30" r="12" fill="#B8863B" />
+        <text x="100" y="34" fontSize="11" textAnchor="middle" fill="#EDE3CF" fontFamily="'Space Mono', monospace" fontWeight="700">
+          {String(index + 1).padStart(2, "0")}
+        </text>
       </svg>
+      <div className="stamp-meta">
+        <span className="stamp-artist">{data.artist}</span>
+        <span className="stamp-date">{formatDate(data.date)}</span>
+      </div>
     </div>
   );
 }
@@ -446,11 +313,8 @@ function CoverFace({ t }) {
   );
 }
 
-function BioPage({ stamps, userName, avatar, t, currentUser }) {
-  const memberSince = currentUser?.member_since
-    ? formatDate(currentUser.member_since)
-    : stamps.length ? formatDate([...stamps].sort((a, b) => (a.date < b.date ? -1 : 1))[0].date) : "—";
-  const passportNum = currentUser?.passport_number || String(1000 + stamps.length);
+function BioPage({ stamps, userName, avatar, t }) {
+  const memberSince = stamps.length ? formatDate([...stamps].sort((a, b) => (a.date < b.date ? -1 : 1))[0].date) : "—";
   return (
     <div className="page bio-page">
       <div className="bio-photo">
@@ -467,7 +331,7 @@ function BioPage({ stamps, userName, avatar, t, currentUser }) {
       <div className="bio-row"><span className="bio-label">{t.bioHolder}</span><span className="bio-value">{userName || t.bioDefaultName}</span></div>
       <div className="bio-row"><span className="bio-label">{t.bioMemberSince}</span><span className="bio-value">{memberSince}</span></div>
       <div className="bio-row"><span className="bio-label">{t.bioStampsCollected}</span><span className="bio-value">{stamps.length}</span></div>
-      <div className="bio-row"><span className="bio-label">{t.bioPassportNo}</span><span className="bio-value">{passportNum}</span></div>
+      <div className="bio-row"><span className="bio-label">{t.bioPassportNo}</span><span className="bio-value">{String(1000 + stamps.length)}</span></div>
       <div className="bio-note">{t.bioNote}</div>
       <div className="bio-emblem">
         <img src={ARS_PRO_MUNDO_IMG} alt="Ars Pro Mundo" style={{ width: "160px", height: "160px", objectFit: "contain", opacity: 0.9 }} />
@@ -508,7 +372,7 @@ function BackCoverPage({ onAdd, t }) {
 /* Settings sheet                                                     */
 /* ------------------------------------------------------------------ */
 
-function SettingsSheet({ onClose, userName, avatar, theme, lang, onSave, onLogout, t }) {
+function SettingsSheet({ onClose, userName, avatar, theme, lang, onSave, t }) {
   const [nameInput, setNameInput] = useState(userName);
   const [avatarPreview, setAvatarPreview] = useState(avatar);
   const [selectedTheme, setSelectedTheme] = useState(theme);
@@ -593,11 +457,6 @@ function SettingsSheet({ onClose, userName, avatar, theme, lang, onSave, onLogou
         <button className="solid-btn" onClick={handleSave}>
           <Check size={15} /> {t.settingsSave}
         </button>
-        {onLogout && (
-          <button className="ghost-btn" style={{ width: '100%', marginTop: 10, justifyContent: 'center', color: '#8B3A3A', borderColor: '#8B3A3A' }} onClick={() => { onLogout(); onClose(); }}>
-            Sign out
-          </button>
-        )}
       </div>
     </div>
   );
@@ -796,7 +655,7 @@ function buildPages(stamps) {
   return pages;
 }
 
-function Book({ stamps, onRequestAdd, userName, avatar, t, currentUser }) {
+function Book({ stamps, onRequestAdd, userName, avatar, t }) {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(0);
   const [flip, setFlip] = useState(null);
@@ -824,7 +683,7 @@ function Book({ stamps, onRequestAdd, userName, avatar, t, currentUser }) {
 
   function renderPage(p) {
     if (!p) return null;
-    if (p.type === "bio") return <BioPage stamps={stamps} userName={userName} avatar={avatar} t={t} currentUser={currentUser} />;
+    if (p.type === "bio") return <BioPage stamps={stamps} userName={userName} avatar={avatar} t={t} />;
     if (p.type === "stamps") return <StampsPage items={p.items} startIndex={p.startIndex} t={t} />;
     return <BackCoverPage onAdd={onRequestAdd} t={t} />;
   }
@@ -879,89 +738,8 @@ const STORAGE_KEY = "vr-art-passport:stamps";
 /* App                                                                */
 /* ------------------------------------------------------------------ */
 
-const API_BASE = 'http://localhost:3001';
-
-async function apiFetch(path, token, opts = {}) {
-  const { body, ...rest } = opts;
-  return fetch(`${API_BASE}${path}`, {
-    ...rest,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-  });
-}
-
-function AuthScreen({ onAuth, onGuest }) {
-  const [mode, setMode] = useState('login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-    try {
-      const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
-      const body = mode === 'login' ? { email, password } : { email, password, name };
-      const resp = await apiFetch(endpoint, null, { method: 'POST', body });
-      const data = await resp.json();
-      if (!resp.ok) { setError(data.error || 'Something went wrong'); setLoading(false); return; }
-      localStorage.setItem('vango_token', data.token);
-      onAuth(data.token, data.user);
-    } catch {
-      setError('Could not reach the server. Please check your connection.');
-    }
-    setLoading(false);
-  }
-
-  return (
-    <div className="auth-screen">
-      <div className="auth-card">
-        <div className="auth-brand">
-          <h1 className="auth-title">VANGO</h1>
-          <p className="auth-sub">Art Passport</p>
-        </div>
-        <div className="tabs">
-          <button className={`tab ${mode === 'login' ? 'tab-active' : ''}`} onClick={() => { setMode('login'); setError(''); }}>Sign in</button>
-          <button className={`tab ${mode === 'register' ? 'tab-active' : ''}`} onClick={() => { setMode('register'); setError(''); }}>Create account</button>
-        </div>
-        <form onSubmit={handleSubmit}>
-          {mode === 'register' && (
-            <div className="field">
-              <span>Name</span>
-              <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" autoComplete="name" />
-            </div>
-          )}
-          <div className="field">
-            <span>Email</span>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required autoComplete="email" />
-          </div>
-          <div className="field">
-            <span>Password</span>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={mode === 'register' ? 'At least 8 characters' : ''} required autoComplete={mode === 'login' ? 'current-password' : 'new-password'} />
-          </div>
-          {error && <p className="field-error">{error}</p>}
-          <button type="submit" className="solid-btn" disabled={loading}>
-            {loading ? '…' : mode === 'login' ? 'Open my passport' : 'Create my passport'}
-          </button>
-        </form>
-        <div style={{ textAlign: 'center', marginTop: 18 }}>
-          <button type="button" className="demo-link" onClick={onGuest}>
-            View demo without signing in
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function App() {
-  const [stamps, setStamps] = useState([]);
+  const [stamps, setStamps] = useState(SEED_STAMPS);
   const [showScan, setShowScan] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -970,146 +748,71 @@ export default function App() {
   const [avatar, setAvatar] = useState(null);
   const [theme, setTheme] = useState("dark");
   const [lang, setLang] = useState("en");
-  const [authToken, setAuthToken] = useState(() => localStorage.getItem('vango_token'));
-  const [currentUser, setCurrentUser] = useState(null);
-  const [guestMode, setGuestMode] = useState(false);
 
   const t = TRANSLATIONS[lang];
 
   useEffect(() => {
-    const token = localStorage.getItem('vango_token');
-    if (!token) { setLoaded(true); return; }
     (async () => {
       try {
-        const userResp = await apiFetch('/me', token);
-        if (!userResp.ok) {
-          localStorage.removeItem('vango_token');
-          setAuthToken(null);
-          setLoaded(true);
-          return;
+        const result = await window.storage?.get(STORAGE_KEY, false);
+        if (result?.value) {
+          const parsed = JSON.parse(result.value);
+          if (Array.isArray(parsed) && parsed.length) setStamps(parsed);
         }
-        const user = await userResp.json();
-        setCurrentUser(user);
-        setAuthToken(token);
-        if (user.name) setUserName(user.name);
-        if (user.avatar_data) setAvatar(user.avatar_data);
-
-        const stampsResp = await apiFetch('/stamps', token);
-        if (stampsResp.ok) {
-          const raw = await stampsResp.json();
-          setStamps(raw.map(s => {
-            const entry = CATALOG[s.code] || {};
-            return { id: `${s.code}-${s.date_collected}`, code: s.code, title: entry.title || s.code, artist: entry.artist || '', venue: entry.venue || '', date: s.date_collected, image: null };
-          }));
-        }
-      } catch {
-        localStorage.removeItem('vango_token');
-        setAuthToken(null);
+      } catch (e) {
+        // no saved data yet — keep seed stamps
       } finally {
         setLoaded(true);
       }
     })();
   }, []);
 
-  function handleAuth(token, user) {
-    setAuthToken(token);
-    setCurrentUser(user);
-    if (user.name) setUserName(user.name);
-    setStamps([]);
-    setLoaded(true);
-    apiFetch('/stamps', token).then(r => r.json()).then(raw => {
-      setStamps(raw.map(s => {
-        const entry = CATALOG[s.code] || {};
-        return { id: `${s.code}-${s.date_collected}`, code: s.code, title: entry.title || s.code, artist: entry.artist || '', venue: entry.venue || '', date: s.date_collected, image: null };
-      }));
-    }).catch(() => {});
-  }
-
-  function handleGuest() {
-    setGuestMode(true);
-    setStamps(SEED_STAMPS);
-    setLoaded(true);
-  }
-
-  function handleLogout() {
-    if (authToken) localStorage.removeItem('vango_token');
-    setAuthToken(null);
-    setCurrentUser(null);
-    setGuestMode(false);
-    setStamps([]);
-    setUserName('Explorer');
-    setAvatar(null);
-    setLoaded(true);
+  async function persist(next) {
+    try {
+      await window.storage?.set(STORAGE_KEY, JSON.stringify(next), false);
+    } catch (e) {
+      // storage unavailable
+    }
   }
 
   function alreadyStamped(code) {
-    return stamps.some((s) => s.code === code);
+    const today = todayISO();
+    return stamps.some((s) => s.code === code && s.date === today);
   }
 
-  async function handleResolve(code, entry) {
-    if (!guestMode) {
-      try {
-        const resp = await apiFetch('/stamps', authToken, { method: 'POST', body: { code } });
-        if (resp.status === 409) {
-          setToast('Already in your passport');
-          setTimeout(() => setToast(''), 2000);
-          setShowScan(false);
-          return;
-        }
-        if (!resp.ok) throw new Error();
-      } catch {
-        setToast('Could not save stamp — check your connection');
-        setTimeout(() => setToast(''), 2200);
-        setShowScan(false);
-        return;
-      }
-    }
+  function handleResolve(code, entry) {
     const date = todayISO();
-    const stamp = { id: `${code}-${date}`, code, title: entry.title, artist: entry.artist, venue: entry.venue, date, image: null };
-    setStamps(prev => [...prev, stamp].sort((a, b) => (a.date < b.date ? -1 : 1)));
+    const stamp = {
+      id: `${code}-${date}-${Date.now()}`,
+      code,
+      title: entry.title,
+      artist: entry.artist,
+      venue: entry.venue,
+      date,
+      image: null,
+    };
+    const next = [...stamps, stamp].sort((a, b) => (a.date < b.date ? -1 : 1));
+    setStamps(next);
+    persist(next);
     setShowScan(false);
     setToast(t.toastStamped(stamp.title));
     setTimeout(() => setToast(""), 2200);
   }
 
-  async function handleSaveSettings({ userName: newName, avatar: newAvatar, theme: newTheme, lang: newLang }) {
+  function handleSaveSettings({ userName: newName, avatar: newAvatar, theme: newTheme, lang: newLang }) {
     setUserName(newName);
     setAvatar(newAvatar);
     setTheme(newTheme);
     setLang(newLang);
-    if (authToken && !guestMode) {
-      try { await apiFetch('/me', authToken, { method: 'PUT', body: { name: newName, avatar_data: newAvatar } }); } catch {}
-    }
     const nextT = TRANSLATIONS[newLang];
     setToast(nextT.toastSettingsSaved);
     setTimeout(() => setToast(""), 2000);
   }
 
-  if (!loaded) {
-    return (
-      <div className="app-root">
-        <style>{CSS}</style>
-        <div className="loading-state" style={{ margin: 'auto' }}>
-          <BookOpen size={26} strokeWidth={1.3} />
-          <span>Loading…</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!authToken && !guestMode) {
-    return (
-      <div className="app-root">
-        <style>{CSS}</style>
-        <AuthScreen onAuth={handleAuth} onGuest={handleGuest} />
-      </div>
-    );
-  }
-
   return (
     <div className="app-root">
       <style>{CSS}</style>
-      <div className={`phone-frame theme-${theme}`}>
+<div className={`phone-frame theme-${theme}`}>
         <div className="status-bar">
           <span>9:41</span>
           <span className="status-icons">••• 5G 100%</span>
@@ -1127,7 +830,14 @@ export default function App() {
         </div>
 
         <div className="app-body">
-          <Book stamps={stamps} onRequestAdd={() => setShowScan(true)} userName={userName} avatar={avatar} t={t} currentUser={currentUser} />
+          {!loaded ? (
+            <div className="loading-state">
+              <BookOpen size={26} strokeWidth={1.3} />
+              <span>{t.loading}</span>
+            </div>
+          ) : (
+            <Book stamps={stamps} onRequestAdd={() => setShowScan(true)} userName={userName} avatar={avatar} t={t} />
+          )}
         </div>
 
         {toast && <div className="toast">{toast}</div>}
@@ -1142,7 +852,6 @@ export default function App() {
           theme={theme}
           lang={lang}
           onSave={handleSaveSettings}
-          onLogout={handleLogout}
           t={t}
         />
       )}
@@ -1163,8 +872,8 @@ const CSS = `
   --cover: #6E1423;
   --cover-2: #3E0A14;
   --gold: #C9A24A;
-  --paper: #EDE3CF;
-  --paper-2: #E3D6B4;
+  --paper: #E8E1D0;
+  --paper-2: #DAD3C0;
   --ink: #2B2418;
   --ink-soft: #5A5240;
   --brass: #B8863B;
@@ -1366,7 +1075,13 @@ const CSS = `
   inset: 0;
   padding: 22px 18px 46px;
   overflow-y: auto;
-  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0 1px, transparent 1px 26px);
+  background:
+    radial-gradient(ellipse 130% 90% at 50% 50%, transparent 55%, rgba(140,120,85,0.08) 100%),
+    repeating-linear-gradient(2deg,   transparent 0px, transparent 11px, rgba(95,80,55,0.030) 11px, rgba(95,80,55,0.030) 12px),
+    repeating-linear-gradient(89deg,  transparent 0px, transparent 11px, rgba(95,80,55,0.022) 11px, rgba(95,80,55,0.022) 12px),
+    repeating-linear-gradient(46deg,  transparent 0px, transparent 16px, rgba(95,80,55,0.016) 16px, rgba(95,80,55,0.016) 17px),
+    repeating-linear-gradient(136deg, transparent 0px, transparent 16px, rgba(95,80,55,0.016) 16px, rgba(95,80,55,0.016) 17px),
+    var(--paper);
 }
 
 .bio-page { display: flex; flex-direction: column; }
@@ -1391,7 +1106,7 @@ const CSS = `
 
 .stamps-page { display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: flex-start; padding-top: 26px; }
 
-.stamp { width: 100%; max-width: 160px; display: flex; flex-direction: column; align-items: center; }
+.stamp { width: 100%; max-width: 230px; display: flex; flex-direction: column; align-items: center; }
 .stamp-svg { width: 100%; }
 .stamp-meta {
   display: flex;
@@ -1618,86 +1333,4 @@ const CSS = `
 @media (prefers-reduced-motion: reduce) {
   .cover, .page-flip { transition: none !important; }
 }
-/* ---- Auth Screen ---- */
-.auth-screen {
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    radial-gradient(ellipse at 25% 20%, rgba(110,20,35,0.3) 0%, transparent 55%),
-    radial-gradient(ellipse at 75% 80%, rgba(62,10,20,0.35) 0%, transparent 50%),
-    linear-gradient(160deg, #0E0A06 0%, #1A1008 50%, #0B0D1A 100%);
-  padding: 20px;
-}
-.auth-card {
-  width: 100%;
-  max-width: 380px;
-  background: var(--paper);
-  border-radius: 20px;
-  padding: 32px 28px 28px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-}
-.auth-brand { text-align: center; margin-bottom: 28px; }
-.auth-title {
-  font-family: 'Fraunces', serif;
-  font-weight: 700;
-  font-size: 34px;
-  letter-spacing: 7px;
-  color: var(--cover);
-  margin: 0 0 6px;
-}
-.auth-sub {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin: 0;
-}
-
-/* ---- Responsive web layout ---- */
-@media (min-width: 768px) {
-  .app-root {
-    min-height: 100vh;
-    background:
-      radial-gradient(ellipse at 25% 15%, rgba(110,20,35,0.28) 0%, transparent 55%),
-      radial-gradient(ellipse at 75% 85%, rgba(43,16,6,0.35) 0%, transparent 50%),
-      linear-gradient(160deg, #0E0A06 0%, #1A1008 50%, #0B0D1A 100%);
-    align-items: center;
-    padding: 40px 20px;
-  }
-  .phone-frame {
-    width: 460px;
-    height: auto;
-    min-height: 780px;
-    border-radius: 20px;
-    border-width: 4px;
-  }
-  .status-bar { display: none; }
-  .stamps-page {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 16px 16px 8px;
-    align-items: start;
-    justify-items: center;
-  }
-  .stamp { max-width: 140px; }
-}
-
-.demo-link {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--ink-soft);
-  letter-spacing: 0.5px;
-  text-decoration: underline;
-  padding: 4px;
-}
-.demo-link:hover { color: var(--ink); }
-
 `;
