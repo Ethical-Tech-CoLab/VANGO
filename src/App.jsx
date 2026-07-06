@@ -1139,6 +1139,7 @@ const CSS = `
 }
 .cover-open { transform: rotateY(-150deg); pointer-events: none; }
 .cover-page {
+  background: transparent;
   margin: auto;
   text-align: center;
   color: #C9A24A;
