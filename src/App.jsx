@@ -200,90 +200,173 @@ function GenerativeArt({ seed, colors }) {
 }
 
 /* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* StampArt                                                           */
+/* ------------------------------------------------------------------ */
+
+function StampArt({ id, c1, c2 }) {
+  const cx = 80, cy = 97;
+  const x0 = 22, y0 = 44;
+  const w = 116, h = 106;
+
+  switch (id) {
+    case "CHROMA14":
+      return (
+        <g>
+          {[0,1,2,3,4].map(i => (
+            <rect key={i} x={x0} y={y0 + i*(h/5)} width={w} height={h/5}
+              fill={i%2===0 ? c1 : c2} opacity={0.10 + i*0.07}/>
+          ))}
+          <ellipse cx={cx} cy={cy} rx={42} ry={28} fill={c1} opacity={0.38}/>
+          <ellipse cx={cx+10} cy={cy-5} rx={28} ry={18} fill={c2} opacity={0.30}/>
+          <line x1={x0} y1={y0+h*0.3} x2={x0+w} y2={y0+h*0.7} stroke={c1} strokeWidth={3} opacity={0.55}/>
+          <line x1={x0} y1={y0+h*0.6} x2={x0+w} y2={y0+h*0.2} stroke={c2} strokeWidth={2} opacity={0.45}/>
+        </g>
+      );
+    case "FAULT02":
+      return (
+        <g>
+          <rect x={x0} y={y0} width={w} height={h} fill={c1} opacity={0.06}/>
+          <polyline points={`${x0},${y0+h*0.2} ${cx-15},${cy-10} ${cx+5},${cy+5} ${cx-5},${cy+20} ${x0+w},${y0+h*0.7}`}
+            fill="none" stroke={c1} strokeWidth={3} opacity={0.65}/>
+          <polyline points={`${x0},${y0+h*0.5} ${cx-20},${cy+5} ${cx+10},${cy-8} ${x0+w},${y0+h*0.4}`}
+            fill="none" stroke={c2} strokeWidth={1.5} opacity={0.50}/>
+          {[[35,60],[100,80],[60,120],[120,100]].map(([px,py],i)=>(
+            <circle key={i} cx={px} cy={py} r={4} fill={c1} opacity={0.4}/>
+          ))}
+        </g>
+      );
+    case "HOLLOW21":
+      return (
+        <g>
+          <rect x={x0} y={y0} width={w} height={h} fill={c1} opacity={0.04}/>
+          {[0,1,2,3].map(i=>(
+            <path key={i}
+              d={`M ${x0+8} ${cy+i*8-12} Q ${cx} ${y0+20+i*5} ${x0+w-8} ${cy+i*8-12}`}
+              fill="none" stroke={c1} strokeWidth={2-i*0.3} opacity={0.60-i*0.10}/>
+          ))}
+          {[1,2,3,4,5].map(i=>(
+            <ellipse key={i} cx={x0+i*(w/6)} cy={cy+5} rx={4} ry={10+i*2}
+              fill="none" stroke={c2} strokeWidth={1} opacity={0.35}/>
+          ))}
+          <circle cx={cx} cy={cy-20} r={16} fill="none" stroke={c1} strokeWidth={1.5} opacity={0.4}/>
+          <circle cx={cx} cy={cy-20} r={8} fill={c1} opacity={0.15}/>
+        </g>
+      );
+    case "ECHO07":
+      return (
+        <g>
+          {[48,36,24,12].map(r=>(
+            <ellipse key={r} cx={cx} cy={cy} rx={r} ry={r*0.6}
+              fill="none" stroke={c1} strokeWidth={1.2} opacity={0.25+0.12*(48-r)/36}/>
+          ))}
+          {[0,45,90,135,180,225,270,315].map((a,i)=>{
+            const rad = a*Math.PI/180;
+            const lx = cx + Math.cos(rad)*52;
+            const ly = cy + Math.sin(rad)*31;
+            return <ellipse key={i} cx={lx} cy={ly} rx={6} ry={4}
+              fill={i%2===0?c1:c2} opacity={0.45} transform={`rotate(${a},${lx},${ly})`}/>;
+          })}
+          <circle cx={cx} cy={cy} r={7} fill={c1} opacity={0.60}/>
+        </g>
+      );
+    case "VOID99":
+      return (
+        <g>
+          <rect x={x0} y={y0} width={w} height={h} fill={c1} opacity={0.08}/>
+          {[[30,55],[45,65],[90,50],[110,75],[130,58],[55,95],[120,100],[38,110],[102,115]].map(([px,py],i)=>(
+            <circle key={i} cx={px} cy={py} r={1.2+i%3} fill={c1} opacity={0.45+0.15*(i%3)}/>
+          ))}
+          <circle cx={cx} cy={y0+22} r={9} fill={c1} opacity={0.65}/>
+          <line x1={cx} y1={y0+31} x2={cx} y2={y0+57} stroke={c1} strokeWidth={3.5} strokeLinecap="round" opacity={0.65}/>
+          <line x1={cx-13} y1={y0+43} x2={cx+13} y2={y0+43} stroke={c1} strokeWidth={3} strokeLinecap="round" opacity={0.65}/>
+          <line x1={cx} y1={y0+57} x2={cx-10} y2={y0+75} stroke={c1} strokeWidth={3} strokeLinecap="round" opacity={0.65}/>
+          <line x1={cx} y1={y0+57} x2={cx+10} y2={y0+75} stroke={c1} strokeWidth={3} strokeLinecap="round" opacity={0.65}/>
+        </g>
+      );
+    case "BURA01":
+      return (
+        <g>
+          <rect x={x0} y={y0} width={w} height={h} fill={c1} opacity={0.04}/>
+          <ellipse cx={cx} cy={cy+18} rx={40} ry={28} fill={c1} opacity={0.35}/>
+          <ellipse cx={cx} cy={cy+18} rx={40} ry={28} fill="none" stroke={c1} strokeWidth={2.5} opacity={0.60}/>
+          <rect x={cx-13} y={y0+16} width={26} height={22} fill={c1} opacity={0.30}/>
+          <rect x={cx-13} y={y0+16} width={26} height={22} fill="none" stroke={c1} strokeWidth={1.5} opacity={0.60}/>
+          <ellipse cx={cx} cy={y0+16} rx={18} ry={5} fill={c1} opacity={0.50}/>
+          {[0,1,2].map(i=>(
+            <ellipse key={i} cx={cx} cy={cy+4+i*10} rx={40-i*6} ry={4}
+              fill="none" stroke={c2} strokeWidth={1} opacity={0.30}/>
+          ))}
+          {[0,1,2,3,4,5].map(i=>{
+            const a = (i/6)*Math.PI*2;
+            return <circle key={i} cx={cx+Math.cos(a)*22} cy={cy+18+Math.sin(a)*14} r={3.5} fill={c2} opacity={0.40}/>;
+          })}
+        </g>
+      );
+    case "DAVID01":
+    default:
+      return (
+        <g>
+          <rect x={x0} y={y0} width={w} height={h} fill={c1} opacity={0.04}/>
+          <rect x={cx-22} y={y0+h-18} width={44} height={14} fill={c1} opacity={0.40}/>
+          <path d={`M ${cx-13},${y0+h-20} L ${cx-15},${y0+34} Q ${cx},${y0+31} ${cx+15},${y0+34} L ${cx+13},${y0+h-20} Z`}
+            fill={c1} opacity={0.45}/>
+          <line x1={cx-15} y1={y0+45} x2={cx-30} y2={y0+74} stroke={c1} strokeWidth={5.5} strokeLinecap="round" opacity={0.45}/>
+          <line x1={cx+15} y1={y0+45} x2={cx+22} y2={y0+67} stroke={c1} strokeWidth={5.5} strokeLinecap="round" opacity={0.45}/>
+          <ellipse cx={cx} cy={y0+24} rx={12} ry={14} fill={c1} opacity={0.55}/>
+          <line x1={cx-32} y1={y0+h-20} x2={cx+32} y2={y0+h-20} stroke={c1} strokeWidth={1} opacity={0.40}/>
+        </g>
+      );
+  }
+}
+
 /* Stamp                                                              */
 /* ------------------------------------------------------------------ */
 
 function Stamp({ data, index }) {
   const [c1, c2] = PALETTE[hashSeed(data.id) % PALETTE.length];
-  const topPath = `top-arc-${data.id}`;
-  const botPath = `bot-arc-${data.id}`;
-
+  const maskId = `perf-${data.id}`;
+  const clipId = `clip-${data.id}`;
+  const topXs = Array.from({length: 11}, (_, i) => Math.round(16 + i * 12.8));
+  const sideYs = Array.from({length: 15}, (_, i) => Math.round(16 + i * 12.4));
   return (
     <div className="stamp">
-      <svg viewBox="0 0 200 200" className="stamp-svg">
+      <svg viewBox="0 0 160 210" className="stamp-svg">
         <defs>
-          <path id={topPath} d="M 26,100 A 74,74 0 0 1 174,100" fill="none" />
-          <path id={botPath} d="M 174,102 A 74,74 0 0 1 26,102" fill="none" />
-          <clipPath id={`clip-${data.id}`}>
-            <circle cx="100" cy="100" r="60" />
+          <mask id={maskId}>
+            <rect x="0" y="0" width="160" height="210" fill="white"/>
+            {topXs.map(x => <circle key={`t${x}`} cx={x} cy="8" r="6" fill="black"/>)}
+            {topXs.map(x => <circle key={`b${x}`} cx={x} cy="202" r="6" fill="black"/>)}
+            {sideYs.map(y => <circle key={`l${y}`} cx="8" cy={y} r="6" fill="black"/>)}
+            {sideYs.map(y => <circle key={`r${y}`} cx="152" cy={y} r="6" fill="black"/>)}
+          </mask>
+          <clipPath id={clipId}>
+            <rect x="22" y="44" width="116" height="106"/>
           </clipPath>
-          <radialGradient id={`ring-${data.id}`} cx="50%" cy="50%" r="50%">
-            <stop offset="80%" stopColor={c1} stopOpacity="0" />
-            <stop offset="100%" stopColor={c1} stopOpacity="0.9" />
-          </radialGradient>
         </defs>
-
-        <circle cx="100" cy="100" r="94" fill="#EDE8DC" opacity="0.92"/>
-        <circle cx="100" cy="100" r="94" fill="none" stroke={c1} strokeWidth="1.5" strokeDasharray="2 4" opacity="0.8" />
-        <circle cx="100" cy="100" r="86" fill="none" stroke="#B8863B" strokeWidth="2" />
-        {[
-          {x1:42,y1:55,x2:46,y2:51,c:"#8B2020"},
-          {x1:130,y1:148,x2:135,y2:152,c:"#1A3080"},
-          {x1:65,y1:150,x2:69,y2:146,c:"#1A5020"},
-          {x1:148,y1:75,x2:153,y2:71,c:"#8B2020"},
-          {x1:55,y1:130,x2:59,y2:134,c:"#1A3080"},
-          {x1:120,y1:55,x2:125,y2:52,c:"#1A5020"},
-          {x1:72,y1:160,x2:76,y2:156,c:"#7A1A1A"},
-        ].map((f,i)=>(
-          <line key={i} x1={f.x1} y1={f.y1} x2={f.x2} y2={f.y2} stroke={f.c} strokeWidth="0.6" opacity="0.38"/>
-        ))}
-
-        <g clipPath={`url(#clip-${data.id})`}>
-          {data.image ? (
-            <image
-              href={data.image}
-              x="34" y="34" width="132" height="132"
-              preserveAspectRatio="xMidYMid slice"
-              style={{ filter: "grayscale(0.55) sepia(0.35) contrast(1.05)" }}
-            />
-          ) : (
-            <foreignObject x="40" y="40" width="120" height="120">
-              <GenerativeArt seed={data.id} colors={[c1, c2]} />
-            </foreignObject>
-          )}
-          <circle cx="100" cy="100" r="60" fill={c1} opacity="0.08" />
+        <g mask={`url(#${maskId})`}>
+          <rect x="8" y="8" width="144" height="194" fill="#F5EDD5"/>
+          <rect x="14" y="36" width="132" height="114" fill={c1} fillOpacity="0.06" stroke={c1} strokeWidth="0.8" opacity="0.35"/>
+          <g clipPath={`url(#${clipId})`}>
+            <StampArt id={data.code} c1={c1} c2={c2}/>
+          </g>
+          <line x1="14" y1="154" x2="146" y2="154" stroke={c1} strokeWidth="0.7" opacity="0.4"/>
+          <text x="80" y="163" textAnchor="middle" fill={c1} fontSize="9" fontFamily="'Space Mono', monospace" fontWeight="700" letterSpacing="0.3">
+            {(data.title.length > 18 ? data.title.substring(0,17)+"…" : data.title).toUpperCase()}
+          </text>
+          <text x="80" y="172" textAnchor="middle" fill={c1} fontSize="7" fontFamily="'Fraunces', serif" fontStyle="italic" opacity="0.85">{data.artist}</text>
+          <text x="80" y="180" textAnchor="middle" fill={c1} fontSize="5.5" fontFamily="'Space Mono', monospace" opacity="0.5">
+            {data.venue.length > 25 ? data.venue.substring(0,25) : data.venue}
+          </text>
+          <text x="80" y="190" textAnchor="middle" fill={c1} fontSize="6" fontFamily="'Space Mono', monospace" letterSpacing="1.2" opacity="0.7">{formatDate(data.date)}</text>
+          <text x="18" y="200" fill={c1} fontSize="6.5" fontFamily="'Space Mono', monospace" opacity="0.55">{String(index + 1).padStart(2,"0")}</text>
+          <text x="142" y="200" textAnchor="end" fill={c1} fontSize="6.5" fontFamily="'Space Mono', monospace" opacity="0.55">APM</text>
         </g>
-
-        <circle cx="100" cy="100" r="60" fill="none" stroke={c1} strokeWidth="1.5" opacity="0.9" />
-        <circle cx="100" cy="100" r="60" fill={`url(#ring-${data.id})`} opacity="0.5" />
-
-        <text fill="#2B2418" fontSize="10.5" letterSpacing="2" fontFamily="'Space Mono', monospace" fontWeight="700">
-          <textPath href={`#${topPath}`} startOffset="50%" textAnchor="middle">
-            {data.title.toUpperCase()}
-          </textPath>
-        </text>
-        <text fill="#2B2418" fontSize="8.5" letterSpacing="1.5" fontFamily="'Space Mono', monospace">
-          <textPath href={`#${botPath}`} startOffset="50%" textAnchor="middle">
-            {data.venue.toUpperCase()}
-          </textPath>
-        </text>
-
-        <circle cx="100" cy="30" r="12" fill="#B8863B" />
-        <text x="100" y="34" fontSize="11" textAnchor="middle" fill="#EDE3CF" fontFamily="'Space Mono', monospace" fontWeight="700">
-          {String(index + 1).padStart(2, "0")}
-        </text>
       </svg>
-      <div className="stamp-meta">
-        <span className="stamp-artist">{data.artist}</span>
-        <span className="stamp-date">{formatDate(data.date)}</span>
-      </div>
     </div>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Pages                                                              */
-/* ------------------------------------------------------------------ */
 
 function CoverFace({ t }) {
   return (
@@ -872,8 +955,8 @@ const CSS = `
   --cover: #6E1423;
   --cover-2: #3E0A14;
   --gold: #C9A24A;
-  --paper: #E8E1D0;
-  --paper-2: #DAD3C0;
+  --paper: #EDE3CF;
+  --paper-2: #E3D6B4;
   --ink: #2B2418;
   --ink-soft: #5A5240;
   --brass: #B8863B;
@@ -1075,13 +1158,7 @@ const CSS = `
   inset: 0;
   padding: 22px 18px 46px;
   overflow-y: auto;
-  background:
-    radial-gradient(ellipse 130% 90% at 50% 50%, transparent 55%, rgba(140,120,85,0.08) 100%),
-    repeating-linear-gradient(2deg,   transparent 0px, transparent 11px, rgba(95,80,55,0.030) 11px, rgba(95,80,55,0.030) 12px),
-    repeating-linear-gradient(89deg,  transparent 0px, transparent 11px, rgba(95,80,55,0.022) 11px, rgba(95,80,55,0.022) 12px),
-    repeating-linear-gradient(46deg,  transparent 0px, transparent 16px, rgba(95,80,55,0.016) 16px, rgba(95,80,55,0.016) 17px),
-    repeating-linear-gradient(136deg, transparent 0px, transparent 16px, rgba(95,80,55,0.016) 16px, rgba(95,80,55,0.016) 17px),
-    var(--paper);
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0 1px, transparent 1px 26px);
 }
 
 .bio-page { display: flex; flex-direction: column; }
