@@ -395,9 +395,9 @@ function Stamp({ data, index }) {
             {sideYs.map(y => <circle key={`l${y}`}  cx="8"   cy={y}   r="5" fill="black"/>)}
             {sideYs.map(y => <circle key={`r${y}`}  cx="152" cy={y}   r="5" fill="black"/>)}
           </mask>
-          {/* §4: tighter illustration clip — 9px breathing room inside border on all sides */}
+          {/* §4: 9px breathing room on left/right/top; bottom extended to include artwork subtitle labels at y=144 */}
           <clipPath id={clipId}>
-            <rect x="23" y="45" width="114" height="96"/>
+            <rect x="23" y="45" width="114" height="103"/>
           </clipPath>
           {/* §5: lift stamp off page with subtle drop shadow */}
           <filter id={filtId} x="-12%" y="-8%" width="124%" height="120%">
@@ -414,7 +414,7 @@ function Stamp({ data, index }) {
             {/* illustration border frame */}
             <rect x="14" y="36" width="132" height="114" fill={c1} fillOpacity="0.06" stroke={c1} strokeWidth="0.8" opacity="0.35"/>
             {/* §4: tinted art-zone background for depth, inside the clip area */}
-            <rect x="23" y="45" width="114" height="96" fill={c1} fillOpacity="0.055"/>
+            <rect x="23" y="45" width="114" height="103" fill={c1} fillOpacity="0.055"/>
             <g clipPath={`url(#${clipId})`}>
               <StampArt id={data.code} c1={c1} c2={c2}/>
             </g>
