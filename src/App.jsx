@@ -376,42 +376,67 @@ function StampArt({ id, c1, c2 }) {
 
 function Stamp({ data, index }) {
   const [c1, c2] = PALETTE[hashSeed(data.id) % PALETTE.length];
-  const maskId = `perf-${data.id}`;
-  const clipId = `clip-${data.id}`;
-  const topXs = Array.from({length: 11}, (_, i) => Math.round(16 + i * 12.8));
-  const sideYs = Array.from({length: 15}, (_, i) => Math.round(16 + i * 12.4));
+  const maskId  = `perf-${data.id}`;
+  const clipId  = `clip-${data.id}`;
+  const filtId  = `drop-${data.id}`;
+  // §5: tighter perforations — r=5, ~10px spacing
+  const topXs  = Array.from({length: 14}, (_, i) => Math.round(9  + i * 10.9));
+  const sideYs = Array.from({length: 19}, (_, i) => Math.round(9  + i * 10.7));
+  // §6: decorative rosette positions (top-left, top-right, bottom-left, bottom-right)
+  const rosettes = [{cx:18,cy:18},{cx:142,cy:18},{cx:18,cy:196},{cx:142,cy:196}];
   return (
     <div className="stamp">
       <svg viewBox="0 0 160 210" className="stamp-svg">
         <defs>
           <mask id={maskId}>
             <rect x="0" y="0" width="160" height="210" fill="white"/>
-            {topXs.map(x => <circle key={`t${x}`} cx={x} cy="8" r="6" fill="black"/>)}
-            {topXs.map(x => <circle key={`b${x}`} cx={x} cy="202" r="6" fill="black"/>)}
-            {sideYs.map(y => <circle key={`l${y}`} cx="8" cy={y} r="6" fill="black"/>)}
-            {sideYs.map(y => <circle key={`r${y}`} cx="152" cy={y} r="6" fill="black"/>)}
+            {topXs.map(x  => <circle key={`t${x}`}  cx={x}   cy="8"   r="5" fill="black"/>)}
+            {topXs.map(x  => <circle key={`b${x}`}  cx={x}   cy="202" r="5" fill="black"/>)}
+            {sideYs.map(y => <circle key={`l${y}`}  cx="8"   cy={y}   r="5" fill="black"/>)}
+            {sideYs.map(y => <circle key={`r${y}`}  cx="152" cy={y}   r="5" fill="black"/>)}
           </mask>
+          {/* §4: tighter illustration clip — 9px breathing room inside border on all sides */}
           <clipPath id={clipId}>
-            <rect x="22" y="44" width="116" height="106"/>
+            <rect x="23" y="45" width="114" height="96"/>
           </clipPath>
+          {/* §5: lift stamp off page with subtle drop shadow */}
+          <filter id={filtId} x="-12%" y="-8%" width="124%" height="120%">
+            <feDropShadow dx="1" dy="2" stdDeviation="1.5" floodOpacity="0.18"/>
+          </filter>
         </defs>
-        <g mask={`url(#${maskId})`}>
-          <rect x="8" y="8" width="144" height="194" fill="#F5EDD5"/>
-          <rect x="14" y="36" width="132" height="114" fill={c1} fillOpacity="0.06" stroke={c1} strokeWidth="0.8" opacity="0.35"/>
-          <g clipPath={`url(#${clipId})`}>
-            <StampArt id={data.code} c1={c1} c2={c2}/>
+
+        {/* shadow wraps the masked group so it traces the perforated outline */}
+        <g filter={`url(#${filtId})`}>
+          <g mask={`url(#${maskId})`}>
+            <rect x="8" y="8" width="144" height="194" fill="#F5EDD5"/>
+            {/* §5: faint diagonal crease suggesting age */}
+            <line x1="22" y1="36" x2="148" y2="190" stroke="#000" strokeWidth="2" opacity="0.035"/>
+            {/* illustration border frame */}
+            <rect x="14" y="36" width="132" height="114" fill={c1} fillOpacity="0.06" stroke={c1} strokeWidth="0.8" opacity="0.35"/>
+            {/* §4: tinted art-zone background for depth, inside the clip area */}
+            <rect x="23" y="45" width="114" height="96" fill={c1} fillOpacity="0.055"/>
+            <g clipPath={`url(#${clipId})`}>
+              <StampArt id={data.code} c1={c1} c2={c2}/>
+            </g>
+            <line x1="14" y1="154" x2="146" y2="154" stroke={c1} strokeWidth="0.7" opacity="0.4"/>
+            <text x="80" y="163" textAnchor="middle" fill={c1} fontSize="9" fontFamily="'Space Mono', monospace" fontWeight="700" letterSpacing="0.3">
+              {(data.title.length > 18 ? data.title.substring(0,17)+"…" : data.title).toUpperCase()}
+            </text>
+            <text x="80" y="172" textAnchor="middle" fill={c1} fontSize="7" fontFamily="'Fraunces', serif" fontStyle="italic" opacity="0.85">{data.artist}</text>
+            <text x="80" y="180" textAnchor="middle" fill={c1} fontSize="5.5" fontFamily="'Space Mono', monospace" opacity="0.5">
+              {data.venue.length > 25 ? data.venue.substring(0,25) : data.venue}
+            </text>
+            <text x="80" y="190" textAnchor="middle" fill={c1} fontSize="6" fontFamily="'Space Mono', monospace" letterSpacing="1.2" opacity="0.7">{formatDate(data.date)}</text>
+            {/* §6: decorative corner rosettes replacing the legibility-challenged text marks */}
+            {rosettes.map(({cx,cy}) => (
+              <g key={`${cx}-${cy}`}>
+                <circle cx={cx} cy={cy} r="2.2" fill={c1} opacity="0.60"/>
+                {[[-4,0],[4,0],[0,-4],[0,4]].map(([dx,dy],i)=>(
+                  <circle key={i} cx={cx+dx} cy={cy+dy} r="1.4" fill={c1} opacity="0.45"/>
+                ))}
+              </g>
+            ))}
           </g>
-          <line x1="14" y1="154" x2="146" y2="154" stroke={c1} strokeWidth="0.7" opacity="0.4"/>
-          <text x="80" y="163" textAnchor="middle" fill={c1} fontSize="9" fontFamily="'Space Mono', monospace" fontWeight="700" letterSpacing="0.3">
-            {(data.title.length > 18 ? data.title.substring(0,17)+"…" : data.title).toUpperCase()}
-          </text>
-          <text x="80" y="172" textAnchor="middle" fill={c1} fontSize="7" fontFamily="'Fraunces', serif" fontStyle="italic" opacity="0.85">{data.artist}</text>
-          <text x="80" y="180" textAnchor="middle" fill={c1} fontSize="5.5" fontFamily="'Space Mono', monospace" opacity="0.5">
-            {data.venue.length > 25 ? data.venue.substring(0,25) : data.venue}
-          </text>
-          <text x="80" y="190" textAnchor="middle" fill={c1} fontSize="6" fontFamily="'Space Mono', monospace" letterSpacing="1.2" opacity="0.7">{formatDate(data.date)}</text>
-          <text x="18" y="200" fill={c1} fontSize="6.5" fontFamily="'Space Mono', monospace" opacity="0.55">{String(index + 1).padStart(2,"0")}</text>
-          <text x="142" y="200" textAnchor="end" fill={c1} fontSize="6.5" fontFamily="'Space Mono', monospace" opacity="0.55">APM</text>
         </g>
       </svg>
     </div>
