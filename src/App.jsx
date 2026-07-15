@@ -43,7 +43,14 @@ const TRANSLATIONS = {
     errorNotFound: (code) => `No artwork registered for “${code}”. Check the code and try again.`,
     errorAlreadyStamped: (title) => `Already stamped today — “${title}” is already in your passport.`,
     toastStamped: (title) => `Stamped: ${title}`,
+    stampEarnedLabel: "Stamped!",
     toastSettingsSaved: "Settings saved",
+    welcomeHeadline: "Your art passport",
+    welcomeSub: "Collect a stamp every time you visit a participating exhibition.",
+    welcomeStep1: "Find a QR code posted beside the artwork",
+    welcomeStep2: "Tap + and scan — or enter the code manually",
+    welcomeStep3: "Your stamp drops into your passport",
+    welcomeCta: "Begin my passport",
   },
   fr: {
     coverSub: "ART · MONDES VISITÉS",
@@ -80,7 +87,14 @@ const TRANSLATIONS = {
     errorNotFound: (code) => `Aucune œuvre enregistrée pour « ${code} ». Vérifiez le code et réessayez.`,
     errorAlreadyStamped: (title) => `Déjà tamponné aujourd’hui — « ${title} » est déjà dans votre passeport.`,
     toastStamped: (title) => `Tamponné : ${title}`,
+    stampEarnedLabel: "Tamponné !",
     toastSettingsSaved: "Paramètres enregistrés",
+    welcomeHeadline: "Votre passeport artistique",
+    welcomeSub: "Collectez un cachet à chaque visite d'une exposition participante.",
+    welcomeStep1: "Trouvez le QR code affiché près de l'œuvre",
+    welcomeStep2: "Appuyez sur + et scannez — ou saisissez le code manuellement",
+    welcomeStep3: "Votre cachet apparaît dans votre passeport",
+    welcomeCta: "Commencer mon passeport",
   },
   it: {
     coverSub: "ARTE · MONDI VISITATI",
@@ -117,7 +131,14 @@ const TRANSLATIONS = {
     errorNotFound: (code) => `Nessuna opera registrata per “${code}”. Controlla il codice e riprova.`,
     errorAlreadyStamped: (title) => `Già timbrato oggi — “${title}” è già nel tuo passaporto.`,
     toastStamped: (title) => `Timbrato: ${title}`,
+    stampEarnedLabel: "Timbrato!",
     toastSettingsSaved: "Impostazioni salvate",
+    welcomeHeadline: "Il tuo passaporto artistico",
+    welcomeSub: "Colleziona un timbro ogni volta che visiti una mostra partecipante.",
+    welcomeStep1: "Trova il QR code esposto accanto all'opera",
+    welcomeStep2: "Tocca + e scansiona — o inserisci il codice manualmente",
+    welcomeStep3: "Il tuo timbro cade nel passaporto",
+    welcomeCta: "Inizia il mio passaporto",
   },
 };
 
@@ -531,7 +552,7 @@ function BackCoverPage({ onAdd, t }) {
 /* Settings sheet                                                     */
 /* ------------------------------------------------------------------ */
 
-function SettingsSheet({ onClose, userName, avatar, theme, lang, onSave, t }) {
+function SettingsSheet({ onClose, userName, avatar, theme, lang, onSave, onLogout, t }) {
   const [nameInput, setNameInput] = useState(userName);
   const [avatarPreview, setAvatarPreview] = useState(avatar);
   const [selectedTheme, setSelectedTheme] = useState(theme);
@@ -616,6 +637,11 @@ function SettingsSheet({ onClose, userName, avatar, theme, lang, onSave, t }) {
         <button className="solid-btn" onClick={handleSave}>
           <Check size={15} /> {t.settingsSave}
         </button>
+        {onLogout && (
+          <button className="ghost-btn" style={{ width: '100%', marginTop: 10, justifyContent: 'center', color: '#8B3A3A', borderColor: '#8B3A3A' }} onClick={() => { onLogout(); onClose(); }}>
+            Sign out
+          </button>
+        )}
       </div>
     </div>
   );
@@ -649,11 +675,13 @@ function ScanSheet({ onClose, onResolve, alreadyStamped, t }) {
   const [error, setError] = useState("");
   const [scanning, setScanning] = useState(false);
   const [cameraError, setCameraError] = useState("");
+  const [earned, setEarned] = useState(null);
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const rafRef = useRef(null);
   const detectorRef = useRef(null);
   const resolvedRef = useRef(false);
+  const earnedTimerRef = useRef(null);
 
   const supportsDetector = typeof window !== "undefined" && "BarcodeDetector" in window;
 
@@ -670,11 +698,19 @@ function ScanSheet({ onClose, onResolve, alreadyStamped, t }) {
         return false;
       }
       resolvedRef.current = true;
-      onResolve(code, entry);
+      setEarned({ code, entry });
       return true;
     },
-    [alreadyStamped, onResolve, t]
+    [alreadyStamped, t]
   );
+
+  useEffect(() => {
+    if (!earned) return;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (streamRef.current) { streamRef.current.getTracks().forEach((tk) => tk.stop()); streamRef.current = null; }
+    earnedTimerRef.current = setTimeout(() => onResolve(earned.code, earned.entry), 5000);
+    return () => clearTimeout(earnedTimerRef.current);
+  }, [earned, onResolve]);
 
   function handleCodeSubmit(e) {
     e.preventDefault();
@@ -730,6 +766,33 @@ function ScanSheet({ onClose, onResolve, alreadyStamped, t }) {
       setScanning(false);
     };
   }, [tab, supportsDetector, tryResolve, t]);
+
+  if (earned) {
+    const previewStamp = {
+      id: earned.code,
+      code: earned.code,
+      title: earned.entry.title,
+      artist: earned.entry.artist,
+      venue: earned.entry.venue,
+      date: todayISO(),
+      image: null,
+    };
+    return (
+      <div className="sheet-backdrop">
+        <div className="sheet sheet-earned">
+          <div className="stamp-earned-header">
+            <Check size={18} />
+            <span>{t.stampEarnedLabel}</span>
+          </div>
+          <div className="stamp-drop-wrap">
+            <div className="stamp-ink-ring" />
+            <Stamp data={previewStamp} index={0} />
+          </div>
+          <p className="stamp-earned-name">{earned.entry.title}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="sheet-backdrop" onClick={onClose}>
@@ -814,7 +877,7 @@ function buildPages(stamps) {
   return pages;
 }
 
-function Book({ stamps, onRequestAdd, userName, avatar, t }) {
+function Book({ stamps, onRequestAdd, userName, avatar, t, jumpTo }) {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(0);
   const [flip, setFlip] = useState(null);
@@ -824,6 +887,12 @@ function Book({ stamps, onRequestAdd, userName, avatar, t }) {
   useEffect(() => {
     if (current > pages.length - 1) setCurrent(pages.length - 1);
   }, [pages.length, current]);
+
+  useEffect(() => {
+    if (!jumpTo) return;
+    setOpen(true);
+    setCurrent(Math.min(jumpTo.page, pages.length - 1));
+  }, [jumpTo]);
 
   const goTo = useCallback(
     (dir) => {
@@ -892,54 +961,261 @@ const SEED_STAMPS = [
 ];
 
 const STORAGE_KEY = "vr-art-passport:stamps";
+const WELCOME_KEY  = "vr-art-passport:welcomed";
+
+/* ------------------------------------------------------------------ */
+/* API helpers                                                        */
+/* ------------------------------------------------------------------ */
+
+const API_BASE = 'http://localhost:3001';
+
+async function apiFetch(path, token, opts = {}) {
+  const { body, ...rest } = opts;
+  return fetch(`${API_BASE}${path}`, {
+    ...rest,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* AuthScreen                                                          */
+/* ------------------------------------------------------------------ */
+
+function AuthScreen({ onAuth, onGuest }) {
+  const [mode, setMode] = useState('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
+      const body = mode === 'login' ? { email, password } : { email, password, name };
+      const resp = await apiFetch(endpoint, null, { method: 'POST', body });
+      const data = await resp.json();
+      if (!resp.ok) { setError(data.error || 'Something went wrong'); setLoading(false); return; }
+      localStorage.setItem('vango_token', data.token);
+      onAuth(data.token, data.user);
+    } catch {
+      setError('Could not reach the server. Please check your connection.');
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div className="auth-screen">
+      <div className="auth-card">
+        <div className="auth-brand">
+          <h1 className="auth-title">VANGO</h1>
+          <p className="auth-sub">Art Passport</p>
+        </div>
+        <div className="tabs">
+          <button className={`tab ${mode === 'login' ? 'tab-active' : ''}`} onClick={() => { setMode('login'); setError(''); }}>Sign in</button>
+          <button className={`tab ${mode === 'register' ? 'tab-active' : ''}`} onClick={() => { setMode('register'); setError(''); }}>Create account</button>
+        </div>
+        <form onSubmit={handleSubmit}>
+          {mode === 'register' && (
+            <div className="field">
+              <span>Name</span>
+              <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" autoComplete="name" />
+            </div>
+          )}
+          <div className="field">
+            <span>Email</span>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required autoComplete="email" />
+          </div>
+          <div className="field">
+            <span>Password</span>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={mode === 'register' ? 'At least 8 characters' : ''} required autoComplete={mode === 'login' ? 'current-password' : 'new-password'} />
+          </div>
+          {error && <p className="field-error">{error}</p>}
+          <button type="submit" className="solid-btn" disabled={loading}>
+            {loading ? '…' : mode === 'login' ? 'Open my passport' : 'Create my passport'}
+          </button>
+        </form>
+        <div style={{ textAlign: 'center', marginTop: 18 }}>
+          <button type="button" className="demo-link" onClick={onGuest}>
+            View demo without signing in
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* WelcomeOverlay                                                     */
+/* ------------------------------------------------------------------ */
+
+function WelcomeOverlay({ onDismiss, t }) {
+  const steps = [
+    { icon: <ScanLine size={18} />, text: t.welcomeStep1 },
+    { icon: <Plus     size={18} />, text: t.welcomeStep2 },
+    { icon: <StampIcon size={18} />, text: t.welcomeStep3 },
+  ];
+  return (
+    <div className="welcome-overlay">
+      <div className="welcome-top">
+        <div className="welcome-logo">VANGO</div>
+        <div className="welcome-logo-sub">ART · WORLDS VISITED</div>
+      </div>
+      <div className="welcome-body">
+        <h2 className="welcome-headline">{t.welcomeHeadline}</h2>
+        <p className="welcome-sub">{t.welcomeSub}</p>
+        <ol className="welcome-steps">
+          {steps.map((s, i) => (
+            <li key={i} className="welcome-step">
+              <span className="welcome-step-num">{i + 1}</span>
+              <span className="welcome-step-icon">{s.icon}</span>
+              <span className="welcome-step-text">{s.text}</span>
+            </li>
+          ))}
+        </ol>
+        <button className="solid-btn welcome-cta" onClick={onDismiss}>
+          <BookOpen size={15} /> {t.welcomeCta}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* App                                                                */
 /* ------------------------------------------------------------------ */
 
 export default function App() {
-  const [stamps, setStamps] = useState(SEED_STAMPS);
+  const [stamps, setStamps] = useState([]);
   const [showScan, setShowScan] = useState(false);
+  const [jumpTo, setJumpTo] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [toast, setToast] = useState("");
   const [userName, setUserName] = useState("Explorer");
   const [avatar, setAvatar] = useState(null);
   const [theme, setTheme] = useState("dark");
   const [lang, setLang] = useState("en");
+  const [authToken, setAuthToken] = useState(() => localStorage.getItem('vango_token'));
+  const [currentUser, setCurrentUser] = useState(null);
+  const [guestMode, setGuestMode] = useState(false);
 
   const t = TRANSLATIONS[lang];
 
   useEffect(() => {
+    const token = localStorage.getItem('vango_token');
+    if (!token) { setLoaded(true); return; }
     (async () => {
       try {
-        const result = await window.storage?.get(STORAGE_KEY, false);
-        if (result?.value) {
-          const parsed = JSON.parse(result.value);
-          if (Array.isArray(parsed) && parsed.length) setStamps(parsed);
+        const userResp = await apiFetch('/me', token);
+        if (!userResp.ok) {
+          localStorage.removeItem('vango_token');
+          setAuthToken(null);
+          setLoaded(true);
+          return;
         }
-      } catch (e) {
-        // no saved data yet — keep seed stamps
+        const user = await userResp.json();
+        setCurrentUser(user);
+        setAuthToken(token);
+        if (user.name) setUserName(user.name);
+        if (user.avatar_data) setAvatar(user.avatar_data);
+        const stampsResp = await apiFetch('/stamps', token);
+        if (stampsResp.ok) {
+          const raw = await stampsResp.json();
+          setStamps(raw.map(s => {
+            const entry = CATALOG[s.code] || {};
+            return { id: `${s.code}-${s.date_collected}`, code: s.code, title: entry.title || s.code, artist: entry.artist || '', venue: entry.venue || '', date: s.date_collected, image: null };
+          }));
+        }
+      } catch {
+        localStorage.removeItem('vango_token');
+        setAuthToken(null);
       } finally {
         setLoaded(true);
       }
     })();
   }, []);
 
-  async function persist(next) {
-    try {
-      await window.storage?.set(STORAGE_KEY, JSON.stringify(next), false);
-    } catch (e) {
-      // storage unavailable
-    }
+  function persist(next) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) {}
+  }
+
+  function handleAuth(token, user) {
+    setAuthToken(token);
+    setCurrentUser(user);
+    if (user.name) setUserName(user.name);
+    if (user.avatar_data) setAvatar(user.avatar_data);
+    setStamps([]);
+    setLoaded(true);
+    apiFetch('/stamps', token).then(r => r.json()).then(raw => {
+      setStamps(raw.map(s => {
+        const entry = CATALOG[s.code] || {};
+        return { id: `${s.code}-${s.date_collected}`, code: s.code, title: entry.title || s.code, artist: entry.artist || '', venue: entry.venue || '', date: s.date_collected, image: null };
+      }));
+    }).catch(() => {});
+  }
+
+  function handleGuest() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const initial = saved ? (() => { try { const p = JSON.parse(saved); return Array.isArray(p) && p.length ? p : SEED_STAMPS; } catch { return SEED_STAMPS; } })() : SEED_STAMPS;
+    const seen = localStorage.getItem(WELCOME_KEY);
+    setGuestMode(true);
+    setStamps(initial);
+    if (!seen) setShowWelcome(true);
+    setLoaded(true);
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('vango_token');
+    setAuthToken(null);
+    setCurrentUser(null);
+    setGuestMode(false);
+    setStamps([]);
+    setUserName('Explorer');
+    setAvatar(null);
+    setShowWelcome(false);
+    setLoaded(true);
+  }
+
+  function dismissWelcome() {
+    setShowWelcome(false);
+    localStorage.setItem(WELCOME_KEY, '1');
   }
 
   function alreadyStamped(code) {
-    const today = todayISO();
-    return stamps.some((s) => s.code === code && s.date === today);
+    if (guestMode) {
+      const today = todayISO();
+      return stamps.some((s) => s.code === code && s.date === today);
+    }
+    return stamps.some((s) => s.code === code);
   }
 
-  function handleResolve(code, entry) {
+  async function handleResolve(code, entry) {
+    if (!guestMode) {
+      try {
+        const resp = await apiFetch('/stamps', authToken, { method: 'POST', body: { code } });
+        if (resp.status === 409) {
+          setToast('Already in your passport');
+          setTimeout(() => setToast(''), 2000);
+          setShowScan(false);
+          return;
+        }
+        if (!resp.ok) throw new Error();
+      } catch {
+        setToast('Could not save stamp — check your connection');
+        setTimeout(() => setToast(''), 2200);
+        setShowScan(false);
+        return;
+      }
+    }
     const date = todayISO();
     const stamp = {
       id: `${code}-${date}-${Date.now()}`,
@@ -951,21 +1227,48 @@ export default function App() {
       image: null,
     };
     const next = [...stamps, stamp].sort((a, b) => (a.date < b.date ? -1 : 1));
+    const newIdx = next.indexOf(stamp);
+    const stampPage = 1 + Math.floor(newIdx / STAMPS_PER_PAGE);
     setStamps(next);
-    persist(next);
+    if (guestMode) persist(next);
     setShowScan(false);
     setToast(t.toastStamped(stamp.title));
     setTimeout(() => setToast(""), 2200);
+    setJumpTo({ page: stampPage, key: Date.now() });
   }
 
-  function handleSaveSettings({ userName: newName, avatar: newAvatar, theme: newTheme, lang: newLang }) {
+  async function handleSaveSettings({ userName: newName, avatar: newAvatar, theme: newTheme, lang: newLang }) {
     setUserName(newName);
     setAvatar(newAvatar);
     setTheme(newTheme);
     setLang(newLang);
+    if (authToken && !guestMode) {
+      try { await apiFetch('/me', authToken, { method: 'PUT', body: { name: newName, avatar_data: newAvatar } }); } catch {}
+    }
     const nextT = TRANSLATIONS[newLang];
     setToast(nextT.toastSettingsSaved);
     setTimeout(() => setToast(""), 2000);
+  }
+
+  if (!loaded) {
+    return (
+      <div className="app-root">
+        <style>{CSS}</style>
+        <div className="loading-state" style={{ margin: 'auto' }}>
+          <BookOpen size={26} strokeWidth={1.3} />
+          <span>Loading…</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!authToken && !guestMode) {
+    return (
+      <div className="app-root">
+        <style>{CSS}</style>
+        <AuthScreen onAuth={handleAuth} onGuest={handleGuest} />
+      </div>
+    );
   }
 
   return (
@@ -989,17 +1292,11 @@ export default function App() {
         </div>
 
         <div className="app-body">
-          {!loaded ? (
-            <div className="loading-state">
-              <BookOpen size={26} strokeWidth={1.3} />
-              <span>{t.loading}</span>
-            </div>
-          ) : (
-            <Book stamps={stamps} onRequestAdd={() => setShowScan(true)} userName={userName} avatar={avatar} t={t} />
-          )}
+          <Book stamps={stamps} onRequestAdd={() => setShowScan(true)} userName={userName} avatar={avatar} t={t} jumpTo={jumpTo} />
         </div>
 
         {toast && <div className="toast">{toast}</div>}
+        {guestMode && showWelcome && <WelcomeOverlay onDismiss={dismissWelcome} t={t} />}
       </div>
 
       {showScan && <ScanSheet onClose={() => setShowScan(false)} onResolve={handleResolve} alreadyStamped={alreadyStamped} t={t} />}
@@ -1011,6 +1308,7 @@ export default function App() {
           theme={theme}
           lang={lang}
           onSave={handleSaveSettings}
+          onLogout={handleLogout}
           t={t}
         />
       )}
@@ -1486,5 +1784,199 @@ const CSS = `
 
 @media (prefers-reduced-motion: reduce) {
   .cover, .page-flip { transition: none !important; }
+}
+
+/* Welcome overlay */
+.welcome-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+}
+.welcome-top {
+  background: linear-gradient(165deg, var(--cover) 0%, var(--cover-2) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 44px 24px 36px;
+  gap: 8px;
+}
+.welcome-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: #EDE3CF;
+  letter-spacing: 8px;
+}
+.welcome-logo-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  opacity: 0.85;
+}
+.welcome-body {
+  flex: 1;
+  padding: 26px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.welcome-headline {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+.welcome-sub {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0 0 22px;
+}
+.welcome-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.welcome-step {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.welcome-step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--cover);
+  color: #EDE3CF;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.welcome-step-icon {
+  color: var(--ink-soft);
+  display: flex;
+  flex-shrink: 0;
+}
+.welcome-step-text {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.welcome-cta { margin-top: auto; }
+
+/* auth screen */
+.auth-screen {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 25% 20%, rgba(110,20,35,0.3) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 80%, rgba(62,10,20,0.35) 0%, transparent 50%),
+    linear-gradient(160deg, #0E0A06 0%, #1A1008 50%, #0B0D1A 100%);
+  padding: 20px;
+}
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--paper);
+  border-radius: 20px;
+  padding: 32px 28px 28px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.auth-brand { text-align: center; margin-bottom: 28px; }
+.auth-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 34px;
+  letter-spacing: 7px;
+  color: var(--cover);
+  margin: 0 0 6px;
+}
+.auth-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.demo-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.5px;
+  text-decoration: underline;
+  padding: 4px;
+}
+.demo-link:hover { color: var(--ink); }
+
+/* stamp-drop earned view */
+.sheet-earned {
+  align-items: center;
+  padding: 32px 24px 36px;
+  gap: 0;
+}
+.stamp-earned-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cover);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.stamp-drop-wrap {
+  position: relative;
+  width: 154px;
+  animation: stamp-drop 0.48s cubic-bezier(0.2, 0, 0.15, 1.5) both;
+}
+.stamp-ink-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 6px;
+  border: 2px solid var(--cover);
+  opacity: 0;
+  animation: ink-ring 0.5s ease-out 0.38s both;
+  pointer-events: none;
+}
+.stamp-earned-name {
+  margin-top: 18px;
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink);
+  text-align: center;
+  line-height: 1.4;
+}
+@keyframes stamp-drop {
+  0%   { transform: scale(1.18) translateY(-20px); opacity: 0; }
+  38%  { transform: scale(0.94) translateY(3px);   opacity: 1; }
+  58%  { transform: scale(1.02) translateY(0);     opacity: 1; }
+  100% { transform: scale(1.0)  translateY(0);     opacity: 1; }
+}
+@keyframes ink-ring {
+  0%   { transform: scale(0.85); opacity: 0.5; }
+  100% { transform: scale(1.5);  opacity: 0; }
 }
 `;
