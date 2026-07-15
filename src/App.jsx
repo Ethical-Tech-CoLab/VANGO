@@ -920,7 +920,7 @@ function Book({ stamps, onRequestAdd, userName, avatar, t, jumpTo }) {
 
   return (
     <div className="book-wrap">
-      <div className={`cover ${open ? "cover-open" : ""}`} onClick={() => !open && setOpen(true)}>
+      <div className={`cover ${open ? "cover-open" : ""}`} onClick={() => !open && setOpen(true)} tabIndex={open ? -1 : 0} role="button" aria-label="Open passport">
         <CoverFace t={t} />
       </div>
 
@@ -1096,6 +1096,11 @@ export default function App() {
   const [stamps, setStamps] = useState([]);
   const [showScan, setShowScan] = useState(false);
   const [jumpTo, setJumpTo] = useState(null);
+  const [pendingStamp, setPendingStamp] = useState(() => {
+    const p = new URLSearchParams(window.location.search).get('stamp');
+    if (p) window.history.replaceState({}, '', window.location.pathname);
+    return p ? p.trim().toUpperCase() : null;
+  });
   const [showSettings, setShowSettings] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -1162,6 +1167,17 @@ export default function App() {
       }));
     }).catch(() => {});
   }
+
+  // Redeem a pending stamp once the user has a session
+  useEffect(() => {
+    if (!pendingStamp) return;
+    if (!authToken && !guestMode) return;
+    const entry = CATALOG[pendingStamp];
+    if (!entry) { setPendingStamp(null); return; }
+    if (alreadyStamped(pendingStamp)) { setPendingStamp(null); return; }
+    handleResolve(pendingStamp, entry);
+    setPendingStamp(null);
+  }, [pendingStamp, authToken, guestMode]);
 
   function handleGuest() {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -1456,9 +1472,17 @@ const CSS = `
   display: flex;
   cursor: pointer;
   transform-origin: left center;
-  transition: transform 0.7s cubic-bezier(.5,0,.2,1);
+  transition: transform 0.7s cubic-bezier(.5,0,.2,1), box-shadow 0.2s ease;
   z-index: 5;
   box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 0 40px rgba(0,0,0,0.25);
+  outline: none;
+}
+.cover:not(.cover-open) {
+  animation: cover-pulse 2.6s ease-in-out 0.6s 2 both;
+}
+.cover:not(.cover-open):hover,
+.cover:not(.cover-open):focus {
+  box-shadow: 0 20px 48px rgba(0,0,0,0.58), 0 0 0 2px rgba(201,162,74,0.35), inset 0 0 40px rgba(0,0,0,0.25);
 }
 .cover-open { transform: rotateY(-150deg); pointer-events: none; }
 .page.cover-page {
@@ -1501,7 +1525,9 @@ const CSS = `
 .cover-rule { width: 34px; height: 1.5px; background: rgba(201,162,74,0.6); }
 .cover-sub { font-family: 'Space Mono', monospace; font-size: 9.5px; letter-spacing: 1.8px; color: rgba(201,162,74,0.75); text-transform: uppercase; margin: 0; }
 .cover-chip { margin-top: 6px; opacity: 0.85; }
-.cover-tap { margin-top: 14px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(201,162,74,0.55); }
+.cover-tap { margin-top: 14px; font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(201,162,74,0.92); display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.cover-tap::after { content: '↑'; font-size: 14px; letter-spacing: 0; opacity: 0.8; animation: tap-bounce 1.8s ease-in-out 1.2s infinite; }
+@keyframes tap-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 
 .book {
   position: absolute;
@@ -1968,6 +1994,11 @@ const CSS = `
   color: var(--ink);
   text-align: center;
   line-height: 1.4;
+}
+@keyframes cover-pulse {
+  0%   { box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 0 40px rgba(0,0,0,0.25); }
+  50%  { box-shadow: 0 20px 48px rgba(0,0,0,0.55), 0 0 0 4px rgba(201,162,74,0.28), inset 0 0 40px rgba(0,0,0,0.25); }
+  100% { box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 0 40px rgba(0,0,0,0.25); }
 }
 @keyframes stamp-drop {
   0%   { transform: scale(1.18) translateY(-20px); opacity: 0; }
