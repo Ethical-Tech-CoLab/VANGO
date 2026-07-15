@@ -1288,32 +1288,26 @@ export default function App() {
   }
 
   return (
-    <div className="app-root">
+    <div className={`app-root theme-${theme}`}>
       <style>{CSS}</style>
-<div className={`phone-frame theme-${theme}`}>
-        <div className="status-bar">
-          <span>9:41</span>
-          <span className="status-icons">••• 5G 100%</span>
+      <div className="app-header">
+        <span className="app-title">VANGO</span>
+        <div className="header-actions">
+          <button className="header-settings" onClick={() => setShowSettings(true)} aria-label="Settings">
+            <Settings size={16} />
+          </button>
+          <button className="header-add" onClick={() => setShowScan(true)} aria-label="Add stamp">
+            <Plus size={18} />
+          </button>
         </div>
-        <div className="app-header">
-          <span className="app-title">VANGO</span>
-          <div className="header-actions">
-            <button className="header-settings" onClick={() => setShowSettings(true)} aria-label="Settings">
-              <Settings size={16} />
-            </button>
-            <button className="header-add" onClick={() => setShowScan(true)} aria-label="Add stamp">
-              <Plus size={18} />
-            </button>
-          </div>
-        </div>
-
-        <div className="app-body">
-          <Book stamps={stamps} onRequestAdd={() => setShowScan(true)} userName={userName} avatar={avatar} t={t} jumpTo={jumpTo} />
-        </div>
-
-        {toast && <div className="toast">{toast}</div>}
-        {guestMode && showWelcome && <WelcomeOverlay onDismiss={dismissWelcome} t={t} />}
       </div>
+
+      <div className="app-body">
+        <Book stamps={stamps} onRequestAdd={() => setShowScan(true)} userName={userName} avatar={avatar} t={t} jumpTo={jumpTo} />
+      </div>
+
+      {toast && <div className="toast">{toast}</div>}
+      {guestMode && showWelcome && <WelcomeOverlay onDismiss={dismissWelcome} t={t} />}
 
       {showScan && <ScanSheet onClose={() => setShowScan(false)} onResolve={handleResolve} alreadyStamped={alreadyStamped} t={t} />}
       {showSettings && (
@@ -1352,52 +1346,32 @@ const CSS = `
   --brass: #B8863B;
   --neon: #14E0C4;
   --neon-2: #FF4F8B;
+  min-height: 100dvh;
   display: flex;
-  justify-content: center;
-  padding: 20px 8px;
+  flex-direction: column;
+  background: var(--cover-2);
   font-family: 'Inter', sans-serif;
   color: var(--ink);
 }
 
-.phone-frame {
-  width: 380px;
-  max-width: 100%;
-  height: 720px;
-  background: var(--cover-2);
-  border-radius: 34px;
-  border: 6px solid #050810;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.04);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.phone-frame.theme-light {
+.app-root.theme-light {
   background: #F2EDE0;
-  border-color: #C8BFA8;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(0,0,0,0.06);
 }
-.phone-frame.theme-light .status-bar { color: #4A3F2F; opacity: 0.8; }
-.phone-frame.theme-light .app-title { color: #2B2418; }
-.phone-frame.theme-light .header-settings { background: rgba(43,36,24,0.1); color: #2B2418; }
-.phone-frame.theme-light .loading-state { color: #7A6A52; }
-
-.status-bar {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 22px 4px;
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: #cfd6ee;
-  opacity: 0.75;
-}
+.app-root.theme-light .app-title { color: #2B2418; }
+.app-root.theme-light .app-header { background: #F2EDE0; border-bottom-color: rgba(43,36,24,0.1); }
+.app-root.theme-light .header-settings { background: rgba(43,36,24,0.1); color: #2B2418; }
+.app-root.theme-light .loading-state { color: #7A6A52; }
 
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 18px 14px;
+  padding: 14px 20px;
+  background: var(--cover-2);
+  border-bottom: 1px solid rgba(201,162,74,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 .app-title {
   font-family: 'Nothing You Could Do', cursive;
@@ -1437,8 +1411,13 @@ const CSS = `
 .app-body {
   flex: 1;
   position: relative;
-  padding: 0 16px 18px;
+  padding: 20px 16px 32px;
   display: flex;
+  min-height: 0;
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .loading-state {
@@ -1648,8 +1627,8 @@ const CSS = `
 
 /* ---- Toast ---- */
 .toast {
-  position: absolute;
-  bottom: 18px;
+  position: fixed;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   background: #0B1226;
@@ -1814,7 +1793,7 @@ const CSS = `
 
 /* Welcome overlay */
 .welcome-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 40;
   display: flex;
