@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hollow Choir — VANGO Stamp</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cover: #6E1423; --cover-2: #3E0A14; --paper: #EDE3CF;
+      --ink: #2B2418; --ink-soft: #5A5240; --accent: #B8863B;
+      font-family: 'Space Mono', 'Courier New', monospace;
+    }
+    body {
+      min-height: 100svh; display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(ellipse at 25% 20%, rgba(110,20,35,0.3) 0%, transparent 55%),
+                  radial-gradient(ellipse at 75% 80%, rgba(62,10,20,0.35) 0%, transparent 50%),
+                  linear-gradient(160deg, #0E0A06 0%, #1A1008 50%, #0B0D1A 100%);
+      padding: 24px;
+    }
+    .card {
+      background: var(--paper); border-radius: 20px; padding: 36px 32px 32px;
+      max-width: 380px; width: 100%; text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .eyebrow {
+      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--cover); margin-bottom: 20px; opacity: 0.8;
+    }
+    .qr-wrap {
+      display: inline-block; padding: 12px; background: #EDE3CF;
+      border: 1.5px solid rgba(110,20,35,0.2); border-radius: 10px;
+      margin-bottom: 22px;
+    }
+    .qr-wrap svg { display: block; width: 180px; height: 180px; }
+    .stamp-code {
+      font-size: 10px; letter-spacing: 2px; color: var(--ink-soft);
+      margin-bottom: 16px;
+    }
+    .title {
+      font-family: Georgia, serif; font-size: 22px; font-weight: 700;
+      color: var(--ink); margin-bottom: 6px; font-style: italic;
+    }
+    .artist { font-size: 12px; color: var(--ink-soft); margin-bottom: 4px; }
+    .venue  { font-size: 11px; color: var(--accent); letter-spacing: 0.5px; margin-bottom: 28px; }
+    .rule { width: 40px; height: 1.5px; background: rgba(110,20,35,0.3); margin: 0 auto 24px; }
+    .cta {
+      display: inline-block; background: var(--cover); color: #EDE3CF;
+      font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; text-decoration: none; padding: 12px 24px;
+      border-radius: 8px; transition: filter 0.15s;
+    }
+    .cta:hover { filter: brightness(1.12); }
+    .hint { font-size: 10px; color: var(--ink-soft); margin-top: 14px; line-height: 1.5; }
+    @media print {
+      body { background: white; padding: 0; }
+      .card { box-shadow: none; border: 1px solid #ccc; }
+      .cta { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <p class="eyebrow">VANGO · Art Passport · Stamp</p>
+    <div class="qr-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 37 37" shape-rendering="crispEdges"><path fill="#EDE3CF" d="M0 0h37v37H0z"/><path stroke="#2B2418" d="M2 2.5h7m3 0h1m1 0h3m1 0h1m1 0h4m1 0h1m2 0h7M2 3.5h1m5 0h1m2 0h1m2 0h5m3 0h1m5 0h1m5 0h1M2 4.5h1m1 0h3m1 0h1m1 0h6m1 0h1m4 0h5m1 0h1m1 0h3m1 0h1M2 5.5h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h1m1 0h2m1 0h2m1 0h1m3 0h1m1 0h3m1 0h1M2 6.5h1m1 0h3m1 0h1m1 0h1m2 0h1m3 0h1m5 0h3m2 0h1m1 0h3m1 0h1M2 7.5h1m5 0h1m1 0h1m1 0h1m3 0h5m1 0h2m4 0h1m5 0h1M2 8.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M10 9.5h2m1 0h2m2 0h1m3 0h1m1 0h3M2 10.5h1m1 0h5m5 0h4m1 0h1m4 0h3m1 0h5M2 11.5h1m1 0h2m3 0h2m1 0h3m3 0h4m1 0h1m1 0h1m2 0h2m1 0h2m1 0h1M2 12.5h1m1 0h2m1 0h3m2 0h2m3 0h2m1 0h1m2 0h2m5 0h1m1 0h1M3 13.5h1m1 0h2m3 0h1m5 0h1m1 0h3m2 0h1m2 0h2m2 0h3m1 0h1M7 14.5h2m2 0h3m3 0h1m3 0h1m2 0h2m1 0h1m1 0h1m1 0h1M3 15.5h2m1 0h2m2 0h10m2 0h1m2 0h2m4 0h1m1 0h2M4 16.5h1m3 0h1m3 0h2m1 0h1m3 0h1m3 0h2m2 0h4m2 0h1M2 17.5h1m2 0h1m1 0h1m1 0h1m2 0h1m1 0h1m3 0h1m4 0h1m1 0h1m1 0h2m2 0h2M3 18.5h3m1 0h3m3 0h2m4 0h1m5 0h3m1 0h2m3 0h1M2 19.5h1m1 0h1m1 0h2m2 0h5m3 0h1m1 0h4m1 0h1m2 0h2m1 0h2m1 0h1M3 20.5h2m2 0h3m4 0h4m2 0h1m1 0h2m2 0h5m1 0h2M2 21.5h2m1 0h2m5 0h1m2 0h2m1 0h1m2 0h1m1 0h2m1 0h1m1 0h6M2 22.5h1m2 0h1m1 0h4m3 0h2m3 0h1m4 0h4m3 0h1m1 0h1M2 23.5h2m3 0h1m1 0h2m1 0h1m1 0h1m1 0h2m1 0h3m3 0h2m7 0h1M2 24.5h1m2 0h6m1 0h1m2 0h3m4 0h3m2 0h1m2 0h4M2 25.5h1m1 0h1m4 0h2m3 0h4m2 0h1m1 0h4m1 0h1m2 0h3m1 0h1M2 26.5h1m1 0h1m1 0h1m1 0h3m2 0h3m1 0h1m1 0h1m1 0h1m2 0h7M10 27.5h1m1 0h1m1 0h1m1 0h1m3 0h3m1 0h1m1 0h1m3 0h1m1 0h3M2 28.5h7m2 0h1m2 0h2m1 0h1m2 0h1m1 0h5m1 0h1m1 0h1m1 0h2M2 29.5h1m5 0h1m1 0h1m1 0h2m1 0h2m3 0h1m1 0h5m3 0h3M2 30.5h1m1 0h3m1 0h1m1 0h1m3 0h4m1 0h2m1 0h1m1 0h1m1 0h6m2 0h1M2 31.5h1m1 0h3m1 0h1m1 0h3m1 0h1m1 0h2m2 0h2m1 0h2m1 0h2m2 0h2m1 0h2M2 32.5h1m1 0h3m1 0h1m1 0h1m2 0h1m4 0h1m1 0h1m2 0h7m1 0h1M2 33.5h1m5 0h1m2 0h4m2 0h2m4 0h1m2 0h2m2 0h1m1 0h1M2 34.5h7m1 0h2m1 0h1m1 0h1m3 0h1m4 0h6m3 0h1"/></svg></div>
+    <p class="stamp-code">HOLLOW21</p>
+    <h1 class="title">Hollow Choir</h1>
+    <p class="artist">R. Venn</p>
+    <p class="venue">Studio Aperture</p>
+    <div class="rule"></div>
+    <a class="cta" href="https://ethical-tech-colab.github.io/VANGO/?stamp=HOLLOW21">Collect this stamp</a>
+    <p class="hint">Scan with your camera to add this stamp<br>to your VANGO Art Passport.</p>
+  </div>
+</body>
+</html>
