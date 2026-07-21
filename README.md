@@ -1,5 +1,8 @@
 # VANGO — Art Passport
 
+**[Live site](https://ethical-tech-colab.github.io/VANGO/)** ·
+**[Research report](VANGO-Paper.md)** (plain-language, non-technical)
+
 A mobile-style digital passport for collecting stamps at art experiences. Each artwork has a unique code; scanning or entering the code earns a stamp that is saved to your passport.
 
 ---
