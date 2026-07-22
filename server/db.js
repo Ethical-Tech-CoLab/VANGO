@@ -26,6 +26,16 @@ db.exec(`
     created_at     TEXT    NOT NULL,
     UNIQUE(user_id, code)
   );
+
+  -- Burned nonces from redeemed signed stamp tokens, so a token cannot be
+  -- replayed by the same account. Shared printed signage is unaffected:
+  -- each visitor redeems under their own user_id.
+  CREATE TABLE IF NOT EXISTS stamp_token_uses (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    nonce   TEXT    NOT NULL,
+    used_at TEXT    NOT NULL,
+    PRIMARY KEY (user_id, nonce)
+  );
 `);
 
 module.exports = db;

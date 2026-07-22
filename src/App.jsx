@@ -709,6 +709,31 @@ function normalizeCode(raw) {
   return (raw || "").trim().toUpperCase().replace(/[\s-]/g, "");
 }
 
+/*
+ * Accepts a bare code ("DAVID01"), an HMAC-signed stamp token
+ * ("v1.CODE.NONCE.EXP.SIG"), or a full deep link carrying either as ?stamp=…
+ *
+ * Returns { code, token }. `code` is only used locally to look up the artwork
+ * and render the preview — the server decides whether a stamp may be granted,
+ * and prefers the signed `token`, which is null for legacy unsigned codes.
+ */
+function parseStampValue(raw) {
+  let value = String(raw || "").trim();
+  if (/^https?:\/\//i.test(value)) {
+    try {
+      value = (new URL(value).searchParams.get("stamp") || "").trim();
+    } catch {
+      // not a parseable URL; fall through and treat it as a raw value
+    }
+  }
+  if (!value) return { code: "", token: null };
+  const parts = value.split(".");
+  if (parts.length === 5 && parts[0] === "v1") {
+    return { code: normalizeCode(parts[1]), token: value };
+  }
+  return { code: normalizeCode(value), token: null };
+}
+
 /* ------------------------------------------------------------------ */
 /* Scan sheet                                                         */
 /* ------------------------------------------------------------------ */
@@ -731,7 +756,7 @@ function ScanSheet({ onClose, onResolve, alreadyStamped, t }) {
 
   const tryResolve = useCallback(
     (rawCode) => {
-      const code = normalizeCode(rawCode);
+      const { code, token } = parseStampValue(rawCode);
       const entry = CATALOG[code];
       if (!entry) {
         setError(t.errorNotFound(rawCode));
@@ -742,7 +767,7 @@ function ScanSheet({ onClose, onResolve, alreadyStamped, t }) {
         return false;
       }
       resolvedRef.current = true;
-      setEarned({ code, entry });
+      setEarned({ code, entry, token });
       return true;
     },
     [alreadyStamped, t]
@@ -752,7 +777,7 @@ function ScanSheet({ onClose, onResolve, alreadyStamped, t }) {
     if (!earned) return;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (streamRef.current) { streamRef.current.getTracks().forEach((tk) => tk.stop()); streamRef.current = null; }
-    earnedTimerRef.current = setTimeout(() => onResolve(earned.code, earned.entry), 5000);
+    earnedTimerRef.current = setTimeout(() => onResolve(earned.code, earned.entry, earned.token), 5000);
     return () => clearTimeout(earnedTimerRef.current);
   }, [earned, onResolve]);
 
@@ -1143,7 +1168,9 @@ export default function App() {
   const [pendingStamp, setPendingStamp] = useState(() => {
     const p = new URLSearchParams(window.location.search).get('stamp');
     if (p) window.history.replaceState({}, '', window.location.pathname);
-    return p ? p.trim().toUpperCase() : null;
+    if (!p) return null;
+    const parsed = parseStampValue(p);
+    return parsed.code ? parsed : null;
   });
   const [showSettings, setShowSettings] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -1216,10 +1243,10 @@ export default function App() {
   useEffect(() => {
     if (!pendingStamp) return;
     if (!authToken && !guestMode) return;
-    const entry = CATALOG[pendingStamp];
+    const entry = CATALOG[pendingStamp.code];
     if (!entry) { setPendingStamp(null); return; }
-    if (alreadyStamped(pendingStamp)) { setPendingStamp(null); return; }
-    handleResolve(pendingStamp, entry);
+    if (alreadyStamped(pendingStamp.code)) { setPendingStamp(null); return; }
+    handleResolve(pendingStamp.code, entry, pendingStamp.token);
     setPendingStamp(null);
   }, [pendingStamp, authToken, guestMode]);
 
@@ -1258,10 +1285,13 @@ export default function App() {
     return stamps.some((s) => s.code === code);
   }
 
-  async function handleResolve(code, entry) {
+  async function handleResolve(code, entry, stampToken = null) {
     if (!guestMode) {
       try {
-        const resp = await apiFetch('/stamps', authToken, { method: 'POST', body: { code } });
+        // Send the signed token when the QR carried one; the server verifies it.
+        // `code` is only a fallback for legacy, already-printed unsigned QR codes.
+        const body = stampToken ? { token: stampToken } : { code };
+        const resp = await apiFetch('/stamps', authToken, { method: 'POST', body });
         if (resp.status === 409) {
           setToast('Already in your passport');
           setTimeout(() => setToast(''), 2000);

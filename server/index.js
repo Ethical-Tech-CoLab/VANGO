@@ -1,6 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const { assertStampConfig } = require('./stampToken');
+
+assertStampConfig();
 
 const app = express();
 
