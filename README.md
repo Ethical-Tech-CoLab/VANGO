@@ -82,3 +82,19 @@ The app runs at `http://localhost:5173` by default.
 - [Vite](https://vitejs.dev) — build tool & dev server
 - [lucide-react](https://lucide.dev) — icons
 - Google Fonts — Fraunces, Space Mono, Inter, Nothing You Could Do, Caveat
+
+---
+
+## Peer Review
+
+An independent academic peer review of this report is available in [`peer-review/`](peer-review/) ([Word](peer-review/vango-Peer-Review.docx) &middot; [Markdown](peer-review/vango-Peer-Review.md)).
+
+**Recommendation:** Major revisions
+
+**What the review found:**
+
+- The conclusion that the idea "works" (S13.1) exceeds the evidence, since S1.7/S10.5 admit it was never tested with users.
+- The "gap" reads as manufactured: only the NPS passport is cited, with no engagement of gamification, museum-engagement, or proof-of-attendance literature (S2.2-2.3).
+- An unresolved ethical thread: a Red List looted-class object is seeded into demo data and then disclaimed as "not a criticism" (S5.11/S9.1/S9.5).
+
+**Noted strength:** An unusually candid limitations section (S10) and a precise, well-argued deterministic-seed design rationale (S5.5, S13.2).
