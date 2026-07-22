@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
+const { getJwtSecret } = require('../jwt');
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ function makePassportNumber() {
 }
 
 function issueToken(userId) {
-  return jwt.sign({ sub: Number(userId) }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ sub: Number(userId) }, getJwtSecret(), { expiresIn: '7d' });
 }
 
 // POST /auth/register

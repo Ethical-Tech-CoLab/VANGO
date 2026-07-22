@@ -596,6 +596,35 @@ function BackCoverPage({ onAdd, t }) {
 /* Settings sheet                                                     */
 /* ------------------------------------------------------------------ */
 
+/* Avatars are downscaled and re-encoded before upload: a raw camera photo read
+   straight to a data URL is several megabytes, which the API rejects (PUT /me
+   caps avatar_data), and re-encoding also normalises odd formats to JPEG. */
+const AVATAR_MAX_PX = 512;
+const AVATAR_QUALITY = 0.85;
+
+function downscaleToDataUrl(file, maxPx = AVATAR_MAX_PX) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Could not read image"));
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Could not decode image"));
+      img.onload = () => {
+        const scale = Math.min(1, maxPx / Math.max(img.width, img.height) || 1);
+        const w = Math.max(1, Math.round(img.width * scale));
+        const h = Math.max(1, Math.round(img.height * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL("image/jpeg", AVATAR_QUALITY));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function SettingsSheet({ onClose, userName, avatar, theme, lang, onSave, onLogout, t }) {
   const [nameInput, setNameInput] = useState(userName);
   const [avatarPreview, setAvatarPreview] = useState(avatar);
@@ -603,12 +632,14 @@ function SettingsSheet({ onClose, userName, avatar, theme, lang, onSave, onLogou
   const [selectedLang, setSelectedLang] = useState(lang);
   const fileRef = useRef(null);
 
-  function handleAvatar(e) {
+  async function handleAvatar(e) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => setAvatarPreview(ev.target.result);
-    reader.readAsDataURL(file);
+    try {
+      setAvatarPreview(await downscaleToDataUrl(file));
+    } catch {
+      /* unreadable / unsupported image — keep the current avatar */
+    }
   }
 
   function handleSave() {
