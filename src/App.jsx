@@ -1067,9 +1067,27 @@ const WELCOME_KEY  = "vr-art-passport:welcomed";
 /* API helpers                                                        */
 /* ------------------------------------------------------------------ */
 
-const API_BASE = 'http://localhost:3001';
+// Configurable at build time via VITE_API_BASE (see .env.example).
+// Falls back to the local dev server so `npm run dev` works with no config.
+const API_BASE = (import.meta.env.VITE_API_BASE || 'http://localhost:3001')
+  .trim()
+  .replace(/\/+$/, '');
+
+// A production build must talk to the API over HTTPS (or a same-origin relative
+// path); plain HTTP would put passwords and bearer tokens on the wire. Localhost
+// is exempt so `vite preview` can still be pointed at a local server.
+function apiBaseIsInsecure(base) {
+  if (base.startsWith('/')) return false;
+  if (base.startsWith('https://')) return false;
+  return !/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/i.test(base);
+}
+
+const API_BASE_INSECURE = import.meta.env.PROD && apiBaseIsInsecure(API_BASE);
 
 async function apiFetch(path, token, opts = {}) {
+  if (API_BASE_INSECURE) {
+    throw new Error('VANGO: VITE_API_BASE must be an https:// URL in production builds.');
+  }
   const { body, ...rest } = opts;
   return fetch(`${API_BASE}${path}`, {
     ...rest,
