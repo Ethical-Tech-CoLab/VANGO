@@ -442,9 +442,23 @@ added later, is currently undocumented.
 
 ## 9. Cultural Property Context
 
-9.1 One catalogue entry raises questions the rest do not. Bura Ceramics is
-attributed in the catalogue to Niger rather than to a named artist, and to a
-venue given only as the initials AABC, which the repository does not expand.
+9.1 One catalogue entry raises questions the rest do not, and it is in the
+catalogue **on purpose**. Bura Ceramics is attributed to Niger rather than to a
+named artist, and was previously attributed to a venue given only as the
+initials "AABC", which nothing in the repository expanded. That was a mistake:
+an unexplained initialism reads as a real institution, and attaching an at-risk
+object to an unidentifiable holder is precisely the ambiguity this section
+exists to criticise. The venue is now labelled **"Unspecified holder
+(illustrative)"**, which is what it always was.
+
+The entry is retained rather than removed because its purpose is to make the
+boundary in 9.4 concrete. A catalogue containing only invented works would let
+the reader believe the question of provenance simply does not arise for an
+attendance record. It does arise, and the honest way to show that is with a real
+class of object whose circulation is genuinely contested. The reader should
+know, however, that the entry is illustrative: no specific Bura vessel, holder,
+or exhibition is being referred to, and no claim whatever is made about any real
+object's status.
 
 9.2 The Bura culture refers to a group of Iron Age archaeological sites in the
 lower Niger River valley, in south-western Niger and south-eastern Burkina
@@ -469,9 +483,15 @@ gallery, the visitor's passport will say only that they saw it, on a particular
 day, at that venue. The document is silent on whether the object should be
 there.
 
-9.5 This is not a criticism of the design. It is a boundary that ought to be
-stated plainly, because a document styled as a passport carries an implication
-of officialdom that the underlying record does not support. A future version
+9.5 Earlier versions of this paper said "this is not a criticism of the design."
+That deflected a criticism that lands. A document styled as a passport carries an
+implication of officialdom that the underlying record does not support, and
+issuing such a document beside an object of contested origin lends that object
+the appearance of a settled institutional context it may not have. The design
+does not cause that problem, but it does not avoid it either, and a prototype
+built in an ethics lab should say so rather than disclaim it. The boundary is
+real and the design currently sits on the wrong side of it for any object whose
+presence in a gallery is itself in question. A future version
 placing works of contested origin in its catalogue would do well to carry the
 object's collection history on the stamp page, or to link to the holding
 institution's own published account of it.
@@ -571,11 +591,20 @@ in return.
 ## 13. Conclusion
 
 13.1 VANGO takes a forty-year-old idea from national park visitor centres and
-asks whether it works for individual works of art. The answer the prototype
-gives is a qualified yes. The mechanism is simple enough to explain in one
-sentence, the cost to a venue is a sheet of paper, and the guest mode
-demonstrates that the whole thing can function without collecting a single
-piece of personal information.
+asks whether it could work for individual works of art. **The prototype does not
+answer that question, and this paper should not be read as claiming it does.**
+VANGO has never been placed in a real exhibition and has never been tested with
+a single museum visitor (see 1.7, 7.1 and 10.5). Whether an attendance record is
+"a form of value in itself" (12.3) is the load-bearing premise of the whole
+design, and it is asserted here, not evidenced.
+
+What the prototype does establish is narrower and entirely about feasibility:
+the mechanism is simple enough to explain in one sentence, the cost to a venue
+is a sheet of paper, and guest mode demonstrates that the whole thing can
+function without collecting a single piece of personal information. Those are
+claims about what was built and what it costs to run, and they are supported.
+The claim that visitors would want it remains untested, and testing it with real
+visitors in a real venue is the next piece of work, not a detail.
 
 13.2 The prototype's most considered decision is the one a visitor will never
 notice: that a stamp's appearance is calculated from its own identity rather

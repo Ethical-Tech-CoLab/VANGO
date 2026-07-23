@@ -13,7 +13,7 @@ Scanning a QR code opens `https://ethical-tech-colab.github.io/VANGO/?stamp=CODE
 | `HOLLOW21` | Hollow Choir | R. Venn | Studio Aperture | [stamps/HOLLOW21.html](https://ethical-tech-colab.github.io/VANGO/stamps/HOLLOW21.html) | [?stamp=HOLLOW21](https://ethical-tech-colab.github.io/VANGO/?stamp=HOLLOW21) |
 | `ECHO07` | Echo Garden | T. Lindqvist | Nomad Pavilion | [stamps/ECHO07.html](https://ethical-tech-colab.github.io/VANGO/stamps/ECHO07.html) | [?stamp=ECHO07](https://ethical-tech-colab.github.io/VANGO/?stamp=ECHO07) |
 | `VOID99` | Voidwalk | K. Amaro | Lattice Museum | [stamps/VOID99.html](https://ethical-tech-colab.github.io/VANGO/stamps/VOID99.html) | [?stamp=VOID99](https://ethical-tech-colab.github.io/VANGO/?stamp=VOID99) |
-| `BURA01` | Bura Ceramics | Niger | AABC | [stamps/BURA01.html](https://ethical-tech-colab.github.io/VANGO/stamps/BURA01.html) | [?stamp=BURA01](https://ethical-tech-colab.github.io/VANGO/?stamp=BURA01) |
+| `BURA01` | Bura Ceramics | Niger | Unspecified holder (illustrative) | [stamps/BURA01.html](https://ethical-tech-colab.github.io/VANGO/stamps/BURA01.html) | [?stamp=BURA01](https://ethical-tech-colab.github.io/VANGO/?stamp=BURA01) |
 | `DAVID01` | David | Michelangelo | Galleria dell'Accademia | [stamps/DAVID01.html](https://ethical-tech-colab.github.io/VANGO/stamps/DAVID01.html) | [?stamp=DAVID01](https://ethical-tech-colab.github.io/VANGO/?stamp=DAVID01) |
 
 ---
