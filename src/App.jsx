@@ -596,35 +596,6 @@ function BackCoverPage({ onAdd, t }) {
 /* Settings sheet                                                     */
 /* ------------------------------------------------------------------ */
 
-/* Avatars are downscaled and re-encoded before upload: a raw camera photo read
-   straight to a data URL is several megabytes, which the API rejects (PUT /me
-   caps avatar_data), and re-encoding also normalises odd formats to JPEG. */
-const AVATAR_MAX_PX = 512;
-const AVATAR_QUALITY = 0.85;
-
-function downscaleToDataUrl(file, maxPx = AVATAR_MAX_PX) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error("Could not read image"));
-    reader.onload = (ev) => {
-      const img = new Image();
-      img.onerror = () => reject(new Error("Could not decode image"));
-      img.onload = () => {
-        const scale = Math.min(1, maxPx / Math.max(img.width, img.height) || 1);
-        const w = Math.max(1, Math.round(img.width * scale));
-        const h = Math.max(1, Math.round(img.height * scale));
-        const canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL("image/jpeg", AVATAR_QUALITY));
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
 function SettingsSheet({ onClose, userName, avatar, theme, lang, onSave, onLogout, t }) {
   const [nameInput, setNameInput] = useState(userName);
   const [avatarPreview, setAvatarPreview] = useState(avatar);
@@ -632,14 +603,12 @@ function SettingsSheet({ onClose, userName, avatar, theme, lang, onSave, onLogou
   const [selectedLang, setSelectedLang] = useState(lang);
   const fileRef = useRef(null);
 
-  async function handleAvatar(e) {
+  function handleAvatar(e) {
     const file = e.target.files?.[0];
     if (!file) return;
-    try {
-      setAvatarPreview(await downscaleToDataUrl(file));
-    } catch {
-      /* unreadable / unsupported image — keep the current avatar */
-    }
+    const reader = new FileReader();
+    reader.onload = (ev) => setAvatarPreview(ev.target.result);
+    reader.readAsDataURL(file);
   }
 
   function handleSave() {
@@ -740,31 +709,6 @@ function normalizeCode(raw) {
   return (raw || "").trim().toUpperCase().replace(/[\s-]/g, "");
 }
 
-/*
- * Accepts a bare code ("DAVID01"), an HMAC-signed stamp token
- * ("v1.CODE.NONCE.EXP.SIG"), or a full deep link carrying either as ?stamp=…
- *
- * Returns { code, token }. `code` is only used locally to look up the artwork
- * and render the preview — the server decides whether a stamp may be granted,
- * and prefers the signed `token`, which is null for legacy unsigned codes.
- */
-function parseStampValue(raw) {
-  let value = String(raw || "").trim();
-  if (/^https?:\/\//i.test(value)) {
-    try {
-      value = (new URL(value).searchParams.get("stamp") || "").trim();
-    } catch {
-      // not a parseable URL; fall through and treat it as a raw value
-    }
-  }
-  if (!value) return { code: "", token: null };
-  const parts = value.split(".");
-  if (parts.length === 5 && parts[0] === "v1") {
-    return { code: normalizeCode(parts[1]), token: value };
-  }
-  return { code: normalizeCode(value), token: null };
-}
-
 /* ------------------------------------------------------------------ */
 /* Scan sheet                                                         */
 /* ------------------------------------------------------------------ */
@@ -787,7 +731,7 @@ function ScanSheet({ onClose, onResolve, alreadyStamped, t }) {
 
   const tryResolve = useCallback(
     (rawCode) => {
-      const { code, token } = parseStampValue(rawCode);
+      const code = normalizeCode(rawCode);
       const entry = CATALOG[code];
       if (!entry) {
         setError(t.errorNotFound(rawCode));
@@ -798,7 +742,7 @@ function ScanSheet({ onClose, onResolve, alreadyStamped, t }) {
         return false;
       }
       resolvedRef.current = true;
-      setEarned({ code, entry, token });
+      setEarned({ code, entry });
       return true;
     },
     [alreadyStamped, t]
@@ -808,7 +752,7 @@ function ScanSheet({ onClose, onResolve, alreadyStamped, t }) {
     if (!earned) return;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (streamRef.current) { streamRef.current.getTracks().forEach((tk) => tk.stop()); streamRef.current = null; }
-    earnedTimerRef.current = setTimeout(() => onResolve(earned.code, earned.entry, earned.token), 5000);
+    earnedTimerRef.current = setTimeout(() => onResolve(earned.code, earned.entry), 5000);
     return () => clearTimeout(earnedTimerRef.current);
   }, [earned, onResolve]);
 
@@ -1067,27 +1011,9 @@ const WELCOME_KEY  = "vr-art-passport:welcomed";
 /* API helpers                                                        */
 /* ------------------------------------------------------------------ */
 
-// Configurable at build time via VITE_API_BASE (see .env.example).
-// Falls back to the local dev server so `npm run dev` works with no config.
-const API_BASE = (import.meta.env.VITE_API_BASE || 'http://localhost:3001')
-  .trim()
-  .replace(/\/+$/, '');
-
-// A production build must talk to the API over HTTPS (or a same-origin relative
-// path); plain HTTP would put passwords and bearer tokens on the wire. Localhost
-// is exempt so `vite preview` can still be pointed at a local server.
-function apiBaseIsInsecure(base) {
-  if (base.startsWith('/')) return false;
-  if (base.startsWith('https://')) return false;
-  return !/^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/i.test(base);
-}
-
-const API_BASE_INSECURE = import.meta.env.PROD && apiBaseIsInsecure(API_BASE);
+const API_BASE = 'http://localhost:3001';
 
 async function apiFetch(path, token, opts = {}) {
-  if (API_BASE_INSECURE) {
-    throw new Error('VANGO: VITE_API_BASE must be an https:// URL in production builds.');
-  }
   const { body, ...rest } = opts;
   return fetch(`${API_BASE}${path}`, {
     ...rest,
@@ -1104,7 +1030,6 @@ async function apiFetch(path, token, opts = {}) {
 /* ------------------------------------------------------------------ */
 
 function AuthScreen({ onAuth, onGuest }) {
-  const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -1116,9 +1041,7 @@ function AuthScreen({ onAuth, onGuest }) {
     setError('');
     setLoading(true);
     try {
-      const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
-      const body = mode === 'login' ? { email, password } : { email, password, name };
-      const resp = await apiFetch(endpoint, null, { method: 'POST', body });
+      const resp = await apiFetch('/auth/register', null, { method: 'POST', body: { email, password, name } });
       const data = await resp.json();
       if (!resp.ok) { setError(data.error || 'Something went wrong'); setLoading(false); return; }
       localStorage.setItem('vango_token', data.token);
@@ -1136,28 +1059,22 @@ function AuthScreen({ onAuth, onGuest }) {
           <h1 className="auth-title">VANGO</h1>
           <p className="auth-sub">Art Passport</p>
         </div>
-        <div className="tabs">
-          <button className={`tab ${mode === 'login' ? 'tab-active' : ''}`} onClick={() => { setMode('login'); setError(''); }}>Sign in</button>
-          <button className={`tab ${mode === 'register' ? 'tab-active' : ''}`} onClick={() => { setMode('register'); setError(''); }}>Create account</button>
-        </div>
         <form onSubmit={handleSubmit}>
-          {mode === 'register' && (
-            <div className="field">
-              <span>Name</span>
-              <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" autoComplete="name" />
-            </div>
-          )}
+          <div className="field">
+            <span>Name</span>
+            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" autoComplete="name" />
+          </div>
           <div className="field">
             <span>Email</span>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required autoComplete="email" />
           </div>
           <div className="field">
             <span>Password</span>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={mode === 'register' ? 'At least 8 characters' : ''} required autoComplete={mode === 'login' ? 'current-password' : 'new-password'} />
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 8 characters" required autoComplete="new-password" />
           </div>
           {error && <p className="field-error">{error}</p>}
           <button type="submit" className="solid-btn" disabled={loading}>
-            {loading ? '…' : mode === 'login' ? 'Open my passport' : 'Create my passport'}
+            {loading ? '…' : 'Create my passport'}
           </button>
         </form>
         <div style={{ textAlign: 'center', marginTop: 18 }}>
@@ -1217,9 +1134,7 @@ export default function App() {
   const [pendingStamp, setPendingStamp] = useState(() => {
     const p = new URLSearchParams(window.location.search).get('stamp');
     if (p) window.history.replaceState({}, '', window.location.pathname);
-    if (!p) return null;
-    const parsed = parseStampValue(p);
-    return parsed.code ? parsed : null;
+    return p ? p.trim().toUpperCase() : null;
   });
   const [showSettings, setShowSettings] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -1292,10 +1207,10 @@ export default function App() {
   useEffect(() => {
     if (!pendingStamp) return;
     if (!authToken && !guestMode) return;
-    const entry = CATALOG[pendingStamp.code];
+    const entry = CATALOG[pendingStamp];
     if (!entry) { setPendingStamp(null); return; }
-    if (alreadyStamped(pendingStamp.code)) { setPendingStamp(null); return; }
-    handleResolve(pendingStamp.code, entry, pendingStamp.token);
+    if (alreadyStamped(pendingStamp)) { setPendingStamp(null); return; }
+    handleResolve(pendingStamp, entry);
     setPendingStamp(null);
   }, [pendingStamp, authToken, guestMode]);
 
@@ -1334,13 +1249,10 @@ export default function App() {
     return stamps.some((s) => s.code === code);
   }
 
-  async function handleResolve(code, entry, stampToken = null) {
+  async function handleResolve(code, entry) {
     if (!guestMode) {
       try {
-        // Send the signed token when the QR carried one; the server verifies it.
-        // `code` is only a fallback for legacy, already-printed unsigned QR codes.
-        const body = stampToken ? { token: stampToken } : { code };
-        const resp = await apiFetch('/stamps', authToken, { method: 'POST', body });
+        const resp = await apiFetch('/stamps', authToken, { method: 'POST', body: { code } });
         if (resp.status === 409) {
           setToast('Already in your passport');
           setTimeout(() => setToast(''), 2000);
