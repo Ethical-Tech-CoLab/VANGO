@@ -701,7 +701,7 @@ const CATALOG = {
   HOLLOW21: { title: "Hollow Choir", artist: "R. Venn", venue: "Studio Aperture" },
   ECHO07: { title: "Echo Garden", artist: "T. Lindqvist", venue: "Nomad Pavilion" },
   VOID99: { title: "Voidwalk", artist: "K. Amaro", venue: "Lattice Museum" },
-  BURA01: { title: "Bura Ceramics", artist: "Niger", venue: "AABC" },
+  BURA01: { title: "Bura Ceramics", artist: "Niger", venue: "Unspecified holder (illustrative)" },
   DAVID01: { title: "David", artist: "Michelangelo", venue: "Galleria dell'Accademia" },
 };
 

@@ -43,7 +43,7 @@ Enter any of the codes below in the app (tap the **+** button → *Enter code*).
 | `HOLLOW21` | Hollow Choir | R. Venn | Studio Aperture |
 | `ECHO07` | Echo Garden | T. Lindqvist | Nomad Pavilion |
 | `VOID99` | Voidwalk | K. Amaro | Lattice Museum |
-| `BURA01` | Bura Ceramics | Niger | AABC |
+| `BURA01` | Bura Ceramics | Niger | Unspecified holder (illustrative) |
 | `DAVID01` | David | Michelangelo | Galleria dell'Accademia |
 
 ---
@@ -93,8 +93,20 @@ The full independent academic peer review of this report is in [PEER-REVIEW.md](
 
 **What the review found:**
 
-- The conclusion that the idea "works" (S13.1) exceeds the evidence, since S1.7/S10.5 admit it was never tested with users.
+- The conclusion that the idea "works" (S13.1) exceeds the evidence, since S1.7/S10.5 admit it was never tested with users. — **Fixed.**
 - The "gap" reads as manufactured: only the NPS passport is cited, with no engagement of gamification, museum-engagement, or proof-of-attendance literature (S2.2-2.3).
-- An unresolved ethical thread: a Red List looted-class object is seeded into demo data and then disclaimed as "not a criticism" (S5.11/S9.1/S9.5).
+- An unresolved ethical thread: a Red List looted-class object is seeded into demo data and then disclaimed as "not a criticism" (S5.11/S9.1/S9.5). — **Fixed.**
 
 **Noted strength:** An unusually candid limitations section (S10) and a precise, well-argued deterministic-seed design rationale (S5.5, S13.2).
+
+
+### Revisions applied (peer review, Tier 2)
+
+**The "it works" conclusion is withdrawn** (S13.1). VANGO has never been placed in a real exhibition or tested with a single museum visitor, so the prototype cannot answer whether the idea works — and the premise that an attendance record is "a form of value in itself" (S12.3) is asserted, not evidenced. S13.1 now claims only what is supported: feasibility. The mechanism is explainable in one sentence, a venue's cost is a sheet of paper, and guest mode runs without collecting personal information. Whether visitors would *want* it is stated as untested and named as the next piece of work.
+
+**The Bura Ceramics entry is kept, but made deliberate and honest** (S9.1, S9.5). It is retained because removing it would let readers believe provenance simply does not arise for an attendance record; a catalogue of only invented works could not make the boundary in S9.4 concrete. Two changes:
+
+- The venue **"AABC"** — an unexplained initialism that read as a real institution while attaching an at-risk object to an unidentifiable holder — is now **"Unspecified holder (illustrative)"** across the app, the printable stamp, and both catalogue tables. S9.1 states plainly that the entry is illustrative and that no real object, holder, or exhibition is referred to.
+- **"This is not a criticism of the design" is dropped** from S9.5. It deflected a criticism that lands: a document styled as a passport implies an officialdom the record does not support, and issuing one beside an object of contested origin lends it the appearance of a settled institutional context. The design does not cause that, but it does not avoid it, and the section now says so.
+
+Note: the three pre-seeded guest stamps (CHROMA14, FAULT02, HOLLOW21) are all fictional — Bura is catalogue-only and reachable by entering its code, not shown automatically.
