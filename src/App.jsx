@@ -944,10 +944,6 @@ function Book({ stamps, onRequestAdd, userName, avatar, t, jumpTo }) {
     [current, flip, pages.length]
   );
 
-  function onTransitionEnd() {
-    if (flip && flip.active) { setCurrent(flip.to); setFlip(null); }
-  }
-
   function renderPage(p) {
     if (!p) return null;
     if (p.type === "bio") return <BioPage stamps={stamps} userName={userName} avatar={avatar} t={t} />;
@@ -956,6 +952,8 @@ function Book({ stamps, onRequestAdd, userName, avatar, t, jumpTo }) {
   }
 
   const baseIndex = flip ? flip.to : current;
+  const leftLeafCount = Math.min(baseIndex, 16);
+  const rightLeafCount = Math.min(pages.length - 1 - baseIndex, 16);
 
   return (
     <div className="book-wrap">
@@ -965,15 +963,31 @@ function Book({ stamps, onRequestAdd, userName, avatar, t, jumpTo }) {
 
       {open && (
         <div className="book">
+          {/* Binding strip — always on top */}
+          <div className="book-spine" aria-hidden />
+
+          {/* Read pages accumulating on the left */}
+          {Array.from({ length: leftLeafCount }, (_, i) => (
+            <div key={`ll${i}`} className="leaf-left" style={{ '--li': i }} />
+          ))}
+
+          {/* Unread pages stacked on the right */}
+          {Array.from({ length: rightLeafCount }, (_, i) => (
+            <div key={`rl${i}`} className="leaf-right" style={{ '--ri': i }} />
+          ))}
+
           <div className="page-base">{renderPage(pages[baseIndex])}</div>
+
           {flip && (
             <div
-              className={`page-flip ${flip.dir === "next" ? "origin-left" : "origin-right"} ${flip.active ? (flip.dir === "next" ? "spin-next" : "spin-prev") : ""}`}
-              onTransitionEnd={onTransitionEnd}
+              className={`page-flip-3d ${flip.dir === "next" ? "origin-left" : "origin-right"} ${flip.active ? (flip.dir === "next" ? "spin-next" : "spin-prev") : ""}`}
+              onTransitionEnd={(e) => { if (e.propertyName === 'transform' && flip?.active) { setCurrent(flip.to); setFlip(null); } }}
             >
-              {renderPage(pages[flip.from])}
+              <div className="flip-front">{renderPage(pages[flip.from])}</div>
+              <div className="flip-back" />
             </div>
           )}
+
           <button className="nav-btn nav-left" onClick={() => goTo("prev")} disabled={current === 0} aria-label="Previous page">
             <ChevronLeft size={18} />
           </button>
@@ -1366,27 +1380,122 @@ const CSS = `
 .book {
   position: absolute;
   inset: 0;
-  border-radius: 14px;
+  border-radius: 4px 14px 14px 4px;
   overflow: hidden;
   background: var(--paper-2);
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05), 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.page-base, .page-flip {
+/* Leather binding strip */
+.book-spine {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 14px;
+  z-index: 10;
+  pointer-events: none;
+  border-radius: 4px 0 0 4px;
+  background: linear-gradient(to right, #0E0600 0%, #5A3612 45%, #7A4E20 65%, #3E2008 100%);
+  box-shadow: 3px 0 12px rgba(0,0,0,0.55), inset -2px 0 4px rgba(0,0,0,0.4);
+}
+
+/* Read-page edges emerging from the left binding */
+.leaf-left {
+  position: absolute;
+  top: 5%; bottom: 5%;
+  left: calc(14px + var(--li) * 1.4px);
+  width: 1px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(210,195,158,0.75) 9%,
+    rgba(246,236,212,0.96) 50%,
+    rgba(210,195,158,0.75) 91%,
+    transparent 100%
+  );
+}
+
+/* Unread-page edges on the right side */
+.leaf-right {
+  position: absolute;
+  top: 5%; bottom: 5%;
+  right: calc(var(--ri) * 1.2px);
+  width: 1px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(205,190,152,0.65) 9%,
+    rgba(240,230,205,0.88) 50%,
+    rgba(205,190,152,0.65) 91%,
+    transparent 100%
+  );
+}
+
+/* Destination page (sits behind everything) */
+.page-base {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: var(--paper);
+}
+
+/* 3D flip wrapper */
+.page-flip-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  transform-style: preserve-3d;
+  transition: transform 0.72s cubic-bezier(.42, 0, .28, 1);
+}
+.page-flip-3d.origin-left {
+  transform-origin: left center;
+  transform: perspective(1800px) rotateY(0deg);
+}
+.page-flip-3d.origin-right {
+  transform-origin: right center;
+  transform: perspective(1800px) rotateY(0deg);
+}
+.page-flip-3d.spin-next { transform: perspective(1800px) rotateY(-180deg); }
+.page-flip-3d.spin-prev { transform: perspective(1800px) rotateY(180deg); }
+
+/* Two faces of the flipping page */
+.flip-front, .flip-back {
+  position: absolute;
+  inset: 0;
   backface-visibility: hidden;
+  background: var(--paper);
 }
-.page-flip {
-  z-index: 3;
-  transition: transform 0.62s cubic-bezier(.45,.05,.35,1);
-  box-shadow: 8px 0 24px rgba(0,0,0,0.18);
+.flip-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(to right,
+    rgba(100,65,22,0.38) 0%,
+    rgba(160,130,85,0.18) 4%,
+    var(--paper-2) 12%,
+    var(--paper) 35%
+  );
 }
-.origin-left { transform-origin: left center; transform: rotateY(0deg); }
-.origin-right { transform-origin: right center; transform: rotateY(0deg); }
-.spin-next { transform: rotateY(-179deg); }
-.spin-prev { transform: rotateY(179deg); }
+
+/* Shadow sweeping across the page as it curls */
+.page-flip-3d.spin-next .flip-front::after,
+.page-flip-3d.spin-prev .flip-front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: fold-shadow 0.72s cubic-bezier(.42, 0, .28, 1) forwards;
+}
+.page-flip-3d.spin-next .flip-front::after {
+  background: linear-gradient(to left, transparent 25%, rgba(0,0,0,0.2) 100%);
+}
+.page-flip-3d.spin-prev .flip-front::after {
+  background: linear-gradient(to right, transparent 25%, rgba(0,0,0,0.2) 100%);
+}
+@keyframes fold-shadow {
+  0%   { opacity: 0; }
+  38%  { opacity: 1; }
+  100% { opacity: 0; }
+}
 
 .page {
   position: absolute;
