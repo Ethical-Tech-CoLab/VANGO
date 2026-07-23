@@ -918,6 +918,7 @@ function buildPages(stamps) {
 
 function Book({ stamps, onRequestAdd, userName, avatar, t, jumpTo }) {
   const [open, setOpen] = useState(false);
+  const [coverGone, setCoverGone] = useState(false);
   const [current, setCurrent] = useState(0);
   const [flip, setFlip] = useState(null);
 
@@ -952,25 +953,30 @@ function Book({ stamps, onRequestAdd, userName, avatar, t, jumpTo }) {
   }
 
   const baseIndex = flip ? flip.to : current;
-  // Leaf content: going next → show source page on front; going prev → show destination page on front
-  const leafFrontPage = flip ? (flip.dir === 'next' ? pages[flip.from] : pages[flip.to]) : null;
-  // Initial transform: next starts right (0°), prev starts left (−180°)
-  const leafInitClass = flip ? (flip.dir === 'next' ? 'leaf-at-right' : 'leaf-at-left') : '';
-  // Active transform: next ends left (−180°), prev ends right (0°)
-  const leafActiveClass = flip?.active ? (flip.dir === 'next' ? 'leaf-at-left' : 'leaf-at-right') : leafInitClass;
   const leftEdgeCount = Math.min(baseIndex, 16);
   const rightEdgeCount = Math.min(pages.length - 1 - baseIndex, 16);
 
   return (
     <div className="book-wrap">
-      {/* Closed cover */}
-      <div className={`cover ${open ? "cover-open" : ""}`} onClick={() => !open && setOpen(true)} tabIndex={open ? -1 : 0} role="button" aria-label="Open passport">
-        <CoverFace t={t} />
-      </div>
+      {/* Closed cover — removed from DOM once opening animation finishes */}
+      {!coverGone && (
+        <div
+          className={`cover ${open ? "cover-open" : ""}`}
+          onClick={() => !open && setOpen(true)}
+          tabIndex={open ? -1 : 0}
+          role="button"
+          aria-label="Open passport"
+          onTransitionEnd={(e) => {
+            if (open && e.propertyName === 'transform') setCoverGone(true);
+          }}
+        >
+          <CoverFace t={t} />
+        </div>
+      )}
 
       {open && (
         <>
-          {/* Page-edge stacks visible beside the book spread */}
+          {/* Page-edge stacks visible beside the book */}
           {Array.from({ length: leftEdgeCount }, (_, i) => (
             <div key={`le${i}`} className="edge-left" style={{ '--i': i }} />
           ))}
@@ -978,40 +984,38 @@ function Book({ stamps, onRequestAdd, userName, avatar, t, jumpTo }) {
             <div key={`re${i}`} className="edge-right" style={{ '--i': i }} />
           ))}
 
-          {/* Open book: left page + right page side by side */}
-          <div className="book-spread">
+          {/* Open book */}
+          <div className="book">
 
-            {/* LEFT HALF — back of turned pages / decorative */}
-            <div className="spread-left">
-              <div className="spread-left-inner" aria-hidden>
-                <div className="left-wm">VANGO</div>
-                <div className="left-pg">{String(baseIndex).padStart(2, '0')}</div>
-              </div>
-            </div>
-
-            {/* RIGHT HALF — destination page (revealed as leaf turns) */}
-            <div className="spread-right">
+            {/* Destination page — revealed as leaf turns */}
+            <div className="page-base">
               {renderPage(pages[baseIndex])}
             </div>
 
-            {/* FLIPPING LEAF — occupies right half, pivots at spine (left center) */}
             {flip && (
-              <div
-                className={`spread-leaf ${leafActiveClass}`}
-                onTransitionEnd={(e) => {
-                  if (e.propertyName === 'transform' && flip?.active) {
-                    setCurrent(flip.to);
-                    setFlip(null);
-                  }
-                }}
-              >
-                <div className="leaf-front">{renderPage(leafFrontPage)}</div>
-                <div className="leaf-back" aria-hidden />
-              </div>
+              <>
+                {/* Opening leaf — destination page, unfolds from spine edge to full width */}
+                <div className={`spread-leaf leaf-open leaf-${flip.dir} ${flip.active ? 'is-open' : ''}`}>
+                  <div className="leaf-face">{renderPage(pages[flip.to])}</div>
+                </div>
+
+                {/* Closing leaf — current page, folds from full width to spine edge */}
+                <div
+                  className={`spread-leaf leaf-close leaf-${flip.dir} ${flip.active ? 'is-close' : ''}`}
+                  onTransitionEnd={(e) => {
+                    if (e.propertyName === 'transform') {
+                      setCurrent(flip.to);
+                      setFlip(null);
+                    }
+                  }}
+                >
+                  <div className="leaf-face">{renderPage(pages[flip.from])}</div>
+                </div>
+              </>
             )}
 
-            {/* Spine shadow — always on top */}
-            <div className="spine-shadow" aria-hidden />
+            {/* Binding shadow strip on spine edge */}
+            <div className="spine-strip" aria-hidden />
 
             <button className="nav-btn nav-left" onClick={() => goTo("prev")} disabled={current === 0} aria-label="Previous page">
               <ChevronLeft size={16} />
@@ -1332,6 +1336,7 @@ const CSS = `
   position: relative;
   flex: 1;
   min-height: 0;
+  perspective: 1800px;
 }
 
 .cover {
@@ -1435,149 +1440,81 @@ const CSS = `
   );
 }
 
-/* Open book — two-page spread */
-.book-spread {
+/* Open book — single full-width page */
+.book {
   position: absolute;
   top: 0; bottom: 0;
   left: 26px; right: 14px;
+  z-index: 2;
   border-radius: 4px 12px 12px 4px;
   overflow: hidden;
-  box-shadow: 0 14px 40px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.25);
-  perspective: 2400px;
-  background: var(--paper-2);
+  box-shadow:
+    0 14px 40px rgba(0,0,0,0.48),
+    0 2px 8px rgba(0,0,0,0.25),
+    inset 0 0 0 1px rgba(0,0,0,0.08);
+  background: var(--paper);
 }
 
-/* LEFT PAGE — back of turned pages / passport decorative */
-.spread-left {
-  position: absolute;
-  top: 0; left: 0; bottom: 0;
-  width: 50%;
-  background:
-    repeating-linear-gradient(-28deg,
-      transparent 0px, transparent 14px,
-      rgba(180,140,60,0.045) 14px, rgba(180,140,60,0.045) 15px
-    ),
-    repeating-linear-gradient(28deg,
-      transparent 0px, transparent 14px,
-      rgba(180,140,60,0.03) 14px, rgba(180,140,60,0.03) 15px
-    ),
-    radial-gradient(ellipse at 65% 45%, var(--paper) 25%, var(--paper-2) 100%);
-  border-right: 1px solid rgba(0,0,0,0.06);
-}
-.spread-left-inner {
+/* Destination page: always visible behind the leaf */
+.page-base {
   position: absolute;
   inset: 0;
+  z-index: 1;
   overflow: hidden;
 }
-.left-wm {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%) rotate(-28deg);
-  font-family: 'Fraunces', serif;
-  font-weight: 700;
-  font-size: 34px;
-  letter-spacing: 10px;
-  color: rgba(180,140,60,0.07);
-  user-select: none;
-  pointer-events: none;
-  white-space: nowrap;
-}
-.left-pg {
-  position: absolute;
-  bottom: 14px; right: 16px;
-  font-family: 'Space Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 2px;
-  color: rgba(90,80,55,0.4);
-}
 
-/* RIGHT PAGE — current content, revealed as leaf turns */
-.spread-right {
-  position: absolute;
-  top: 0; right: 0; bottom: 0;
-  width: 50%;
-  background: var(--paper);
-  z-index: 1;
-}
-.spread-right .page { border-radius: 0 12px 12px 0; }
-
-/* FLIPPING LEAF — sits over right half, pivots at spine (left edge = center of spread) */
+/* LEAVES — both full-width, pivot at the spine edge */
 .spread-leaf {
   position: absolute;
-  top: 0; right: 0; bottom: 0;
-  width: 50%;
-  transform-origin: left center;
-  transform-style: preserve-3d;
-  transition: transform 0.78s cubic-bezier(.42, 0, .25, 1);
-  z-index: 8;
+  inset: 0;
   will-change: transform;
 }
-/* Resting on right half (facing viewer) */
-.spread-leaf.leaf-at-right { transform: rotateY(0deg); }
-/* Resting on left half (flipped, back face visible) */
-.spread-leaf.leaf-at-left  { transform: rotateY(-180deg); }
 
-/* Front face: page content */
-.leaf-front {
+/* ALL leaves pivot at the LEFT edge — the book spine */
+.spread-leaf.leaf-close { z-index: 5; transition: transform 0.42s cubic-bezier(.42, 0, 1, 1); transform-origin: left center; }
+.spread-leaf.leaf-open  { z-index: 4; transition: transform 0.42s cubic-bezier(0, 0, .58, 1); transform-origin: left center; }
+
+/* Closing leaf: face-on → folds into the left spine */
+.spread-leaf.leaf-close           { transform: perspective(1400px) rotateY(0deg);   }
+.spread-leaf.leaf-close.is-close  { transform: perspective(1400px) rotateY(-90deg); }
+
+/* Opening leaf NEXT: swings out from behind the spine (page stack on right) */
+.spread-leaf.leaf-open.leaf-next          { transform: perspective(1400px) rotateY(90deg);  }
+.spread-leaf.leaf-open.leaf-next.is-open  { transform: perspective(1400px) rotateY(0deg);   }
+
+/* Opening leaf PREV: swings out from the already-read stack behind the spine */
+.spread-leaf.leaf-open.leaf-prev          { transform: perspective(1400px) rotateY(-90deg); }
+.spread-leaf.leaf-open.leaf-prev.is-open  { transform: perspective(1400px) rotateY(0deg);   }
+
+.leaf-face {
   position: absolute;
   inset: 0;
-  backface-visibility: hidden;
-  background: var(--paper);
   overflow: hidden;
 }
-.leaf-front .page { border-radius: 0 12px 12px 0; }
 
-/* Back face: paper pattern (shown as page turns) */
-.leaf-back {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  transform: rotateY(180deg);
-  background:
-    repeating-linear-gradient(-28deg,
-      transparent 0px, transparent 14px,
-      rgba(180,140,60,0.04) 14px, rgba(180,140,60,0.04) 15px
-    ),
-    linear-gradient(to right, var(--paper-2) 0%, var(--paper) 60%);
-}
-
-/* Shadow sweeping across the leaf front as it curls toward the spine */
-.leaf-front::after {
+/* Shadow deepens on the right side of the page as it folds toward the left spine */
+.leaf-close .leaf-face::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(to left, transparent 35%, rgba(0,0,0,0.18) 100%);
   opacity: 0;
-  transition: opacity 0.78s cubic-bezier(.42, 0, .25, 1);
+  transition: opacity 0.42s ease;
+  background: linear-gradient(to left, transparent 20%, rgba(0,0,0,0.3) 100%);
 }
-.spread-leaf.leaf-at-left .leaf-front::after { opacity: 0; }
+.leaf-close.is-close .leaf-face::after { opacity: 1; }
 
-/* Shadow falling on the left page as the leaf sweeps over it */
-.leaf-back::after {
-  content: '';
+/* Binding shadow — narrow strip along the left/spine edge */
+.spine-strip {
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to right, rgba(0,0,0,0.22) 0%, transparent 55%);
-}
-
-/* CENTER SPINE — dark shadow at the book fold */
-.spine-shadow {
-  position: absolute;
-  top: 0; bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 28px;
-  z-index: 12;
+  top: 0; bottom: 0; left: 0;
+  width: 18px;
+  z-index: 10;
   pointer-events: none;
   background: linear-gradient(to right,
-    rgba(0,0,0,0.0) 0%,
-    rgba(0,0,0,0.08) 28%,
-    rgba(0,0,0,0.28) 46%,
-    rgba(0,0,0,0.28) 54%,
-    rgba(0,0,0,0.08) 72%,
-    rgba(0,0,0,0.0) 100%
+    rgba(0,0,0,0.34) 0%,
+    rgba(0,0,0,0.14) 50%,
+    transparent 100%
   );
 }
 
@@ -1609,20 +1546,17 @@ const CSS = `
 .bio-note { margin-top: 14px; font-size: 11px; line-height: 1.5; color: var(--ink-soft); font-style: italic; font-family: 'Caveat', cursive; }
 .bio-emblem { display: flex; justify-content: center; margin-top: 12px; }
 
-.stamps-page { display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: flex-start; padding-top: 14px; }
-
-.stamp { width: 92%; display: flex; flex-direction: column; align-items: center; }
-.stamp-svg { width: 100%; }
-.stamp-meta {
+.stamps-page {
   display: flex;
-  justify-content: space-between;
-  width: 86%;
-  margin-top: -4px;
-  font-family: 'Space Mono', monospace;
-  font-size: 8.5px;
-  color: var(--ink-soft);
-  letter-spacing: 0.3px;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
+
+.stamp { width: 58%; display: flex; flex-direction: column; align-items: center; }
+.stamp-svg { width: 100%; }
 
 .empty-page { margin: auto; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #9c8f6c; font-size: 12px; }
 
